@@ -160,6 +160,10 @@ a:hover {
   left: 0;
 }
 
+.twitter-feed-card{
+  background-color: #ddd; padding-top: 10px; padding: 10px 10px 5px 10px;
+}
+
 /*---------------------------------------
   CUSTOM LINK               
 -----------------------------------------*/
@@ -196,7 +200,7 @@ a:hover {
 
 .custom-link:hover,
 .custom-link:hover::after {
-  color: var(--white-color);
+  color: var(--primary-color);
 }
 
 b,
@@ -380,6 +384,8 @@ strong {
 /*---------------------------------------
   ABOUT & TEAM MEMBERS               
 -----------------------------------------*/
+#about{margin-top: -50px; overflow: hidden;}
+
 .about-image,
 .team-image {
   width: 100%;
@@ -544,8 +550,8 @@ strong {
   SECTION               
 -----------------------------------------*/
 .section-padding {
-  padding-top: 7rem;
-  padding-bottom: 7rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 /*---------------------------------------
@@ -592,8 +598,8 @@ strong {
 -----------------------------------------*/
 .site-footer {
   background: var(--dark-color);
-  padding-top: 4.5rem;
-  padding-bottom: 2.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 
 .site-footer .custom-link {
@@ -617,6 +623,7 @@ strong {
 .social-icon {
   margin: 0;
   padding: 0;
+  float: right;
 }
 
 .social-icon li {
@@ -676,11 +683,6 @@ strong {
   .navbar {
     padding-top: 10px;
     padding-bottom: 10px;
-  }
-
-  .section-padding {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
   }
 
   .team-thumb {
