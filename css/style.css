@@ -385,161 +385,34 @@ strong {
   ABOUT & TEAM MEMBERS               
 -----------------------------------------*/
 #about{margin-top: -50px; overflow: hidden;}
-
-.about-image,
-.team-image {
-  width: 100%;
-  height: 100%;
-  max-height: 635px;
-  min-height: 475px;
-  object-fit: cover;
-}
-
-.team-thumb {
-  background: var(--white-color);
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 65%;
-  padding: 22px 32px 32px 32px;
-}
-
-.carousel-control-next, 
-.carousel-control-prev {
-  top: auto;
-  bottom: 2.5rem;
-}
-
-.carousel-control-prev {
-  right: 4rem;
-  left: auto;
-}
-
-.carousel-control-next-icon, 
-.carousel-control-prev-icon {
-  background-color: var(--dark-color);
-  background-size: 50% 50%;
-  border-radius: 100px;
-  width: 3rem;
-  height: 3rem;
-}
-
-/*---------------------------------------
-  PORTFOLIO               
------------------------------------------*/
-.portfolio-thumb {
-  position: relative;
-  overflow: hidden;
-}
-
-.portfolio-info {
-  margin: 20px;
-}
+.cteam-box-wrapper:hover .cteam-box{border-color: var(--primary-color) !important;}
+.team-image {width: 100%; height: 100%; max-height: 375px; min-height: 160px; object-fit: cover; margin-bottom: 15px;}
+.cteam-box{border: 1px solid #ddd; padding: 10px;}
+.cteam-box h3{font-size: 21px; font-weight: 400; color: #454545;}
+.cteam-box p{font-size: 17px; font-weight: 300; color: #333333;}
+.cteam-box a.btn{margin-bottom: 10px;}
 
 /*---------------------------------------
   NEWS & EVENTS               
 -----------------------------------------*/
+.news-card{background-color: #edffdb; padding: 10px; box-shadow: 0px 7px 21px -17px #4e5451; border-bottom: 6px solid #808882;}
+.news-card h6{font-size: 18px; font-weight: 600;}
+.news-card p{font-size: 16px; font-weight: 300;}
 
-.news,
-.related-news {
-  background: var(--section-bg-color);
-}
+.news-category{background: var(--white-color); position: absolute; z-index: 9; top: 0; left: 0; padding: 4px 12px; display: inline-block;}
 
-.news-thumb {
-  position: relative;
-}
+.news-text-info {margin: 0 20px;}
+.news-title {margin-top: 15px; margin-bottom: 15px;}
+.news-title-link {color: var(--title-color); display: inline-block;}
+.news-title-link:hover {color: var(--dark-color);}
+.news-image-hover {display: inline-block; position: relative; overflow: hidden; z-index: 1; transition: all .3s cubic-bezier(.645,.045,.355,1); padding-bottom: 4px; height: 100%;}
 
-.news-category {
-  background: var(--white-color);
-  position: absolute;
-  z-index: 9;
-  top: 0;
-  left: 0;
-  padding: 4px 12px;
-  display: inline-block;
-}
+.news-image-hover::after {content: ""; width: 0; height: 4px; bottom: 0; position: absolute; left: auto; right: 0; z-index: -1; transition: width .6s cubic-bezier(.25,.8,.25,1) 0s; background: #198754;}
 
-.news-text-info {
-  margin: 0 20px;
-}
-
-.news-title {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-.news-title-link {
-  color: var(--title-color);
-  display: inline-block;
-}
-
-.news-title-link:hover {
-  color: var(--dark-color);
-}
-
-.portfolio-image,
-.news-image {
-  display: block;
-  transition: transform 0.6s ease-out;
-}
-
-.news-image-hover {
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  transition: all .3s cubic-bezier(.645,.045,.355,1);
-  padding-bottom: 4px;
-  height: 100%;
-}
-
-.news-image-hover::after {
-  content: "";
-  width: 0;
-  height: 4px;
-  bottom: 0;
-  position: absolute;
-  left: auto;
-  right: 0;
-  z-index: -1;
-  transition: width .6s cubic-bezier(.25,.8,.25,1) 0s;
-  background: #198754;
-}
-
-.news-image-hover-warning::after {
-  background: #ffc107;
-}
-
-.news-image-hover-primary::after {
-  background: #0d6efd;
-}
-
-.news-image-hover-success::after {
-  background: #198754;
-}
-
-.news-image-hover:hover::after {
-  width: 100%;
-  left: 0;
-  right: auto;
-  z-index: 9;
-}
-
-.image-popup:hover .portfolio-image,
-.news-image-hover:hover .news-image {
-  transform: scale(1.02);
-}
-
-.news-two-column {
-  min-height: 199px;
-  margin-bottom: 16px;
-}
-
-.news-two-column .news-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+.news-image-hover-warning::after {background: #ffc107;}
+.news-image-hover-primary::after {background: #0d6efd;}
+.news-image-hover-success::after {background: #198754;}
+.news-image-hover:hover::after {width: 100%; left: 0; right: auto; z-index: 9;}
 
 .social-share-link,
 .social-share-link + span {
@@ -549,6 +422,7 @@ strong {
 /*---------------------------------------
   SECTION               
 -----------------------------------------*/
+
 .section-padding {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -557,6 +431,9 @@ strong {
 /*---------------------------------------
   CONTACT              
 -----------------------------------------*/
+
+#contact{background-color: #f7f7f7;}
+
 .contact-info {
   padding: 40px;
 }
@@ -596,6 +473,7 @@ strong {
 /*---------------------------------------
   SITE FOOTER               
 -----------------------------------------*/
+
 .site-footer {
   background: var(--dark-color);
   padding-top: 1.5rem;
@@ -723,4 +601,3 @@ strong {
     font-size: 22px;
   }
 }
-
