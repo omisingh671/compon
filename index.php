@@ -1,5 +1,5 @@
 <?php
-include_once "layout.php";
+include_once "compon.php";
 ?>
 
 <!doctype html>
@@ -9,9 +9,9 @@ include_once "layout.php";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php Layout::siteTitle("Climate Change Policy Networks"); ?></title>
+    <title><?php Compon::siteTitle("Climate Change Policy Networks"); ?></title>
 
-    <?php Layout::stylesSheets(); ?>
+    <?php Compon::stylesSheets(); ?>
 
     <meta name="description" content="">
     <meta name="author" content="">
@@ -22,7 +22,7 @@ include_once "layout.php";
 
     <main>
 
-        <?php Layout::navbar(); ?>
+        <?php Compon::navbar(); ?>
 
         <!--hero section start-->
         <section class="hero-section" style="position: relative;">
@@ -283,8 +283,8 @@ include_once "layout.php";
         <!--steering committee section end-->
     </main>
 
-    <?php Layout::footer(); ?>
-    <?php Layout::scripts(); ?>
+    <?php Compon::footer(); ?>
+    <?php Compon::scripts(); ?>
 
 </body>
 

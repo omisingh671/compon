@@ -17,7 +17,7 @@ class Compon{
     private static $table_members = "compon_members";
     # tables start
 
-    /* CRUD Functions Start Here */
+    ################### CRUD Functions Start Here ###################
     
     public static function auth($username, $password){
         global $crud;
@@ -32,7 +32,7 @@ class Compon{
         return $records = $crud->getRow(self::$table_publications, $columns, $where_condition);
     }
     
-    /* CRUD Functions End Here */
+    ################### CRUD Functions End Here ###################
 
     /* Utility Functions Start Here */
 
