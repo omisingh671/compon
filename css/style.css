@@ -63,6 +63,9 @@ h6 {font-size: var(--h6-font-size);}
 
 p {color: var(--p-color); font-size: var(--p-font-size); font-weight: var(--font-weight-light); letter-spacing: 0.5px;}
 
+.br-0{border-radius: 0px !important;}
+
+.scrollarea {overflow-y: auto; height: 100%;}
 .text-secondary-white-color {color: var(--text-secondary-white-color);}
 
 .uppercase{text-transform: uppercase;}
@@ -136,7 +139,7 @@ b,strong {font-weight: var(--font-weight-bold);}
 
 /* publications section start */
 #publications{background-color: #f3eff7;}
-.news-card{min-height: 395px; padding:10px; position: relative;}
+.news-card{min-height: 345px; padding:10px; position: relative;}
 .news-card h6{font-size: 20px; line-height: 28px; margin: 0px 0px 10px 0px;}
 .news-card .news-journal{font-size: 18px; line-height: 26px; margin: 7px 0px 15px 0px;}
 .news-card .news-desc, .news-card .news-desc p{margin: 0px;}
@@ -153,7 +156,7 @@ b,strong {font-weight: var(--font-weight-bold);}
 .team-box-wrapper:hover .team-box{border-color: var(--primary-color) !important;}
 
 
-.team-box{min-height: 410px; position: relative; border: 1px solid #ddd; padding: 10px;}
+.team-box{min-height: 410px; position: relative; border: 2px solid #808080; padding: 10px;}
 .team-box h3{font-size: 18px; margin-bottom: 10px; font-weight: 400; color: #454545;}
 .team-box p{font-size: 16px; color: #333333; margin-bottom: 5px;}
 .team-box a.btn{margin-bottom: 10px;}
@@ -182,7 +185,7 @@ b,strong {font-weight: var(--font-weight-bold);}
 .filter-btns button:first-child{margin-right: 7px;}
 .filter-btns button:last-child{margin-left: 7px;}
 
-.member-types{margin-bottom: 45px;}
+.member-types{margin-bottom: 10px;}
 /* case teams end */
 
 /* projects start */
@@ -209,6 +212,17 @@ b,strong {font-weight: var(--font-weight-bold);}
 .site-footer .custom-link:hover, .site-footer .social-icon-link:hover {color: var(--white-color);}
 
 .copyright-text {color: rgba(255, 255, 255, 0.45); font-size: var(--copyright-text-font-size);}
+
+/* dashboard styling start */
+.admin-sidebar ul{width: 250px;}
+.dashboard{display: flex; flex-wrap: nowrap; height: 100vh; height: -webkit-fill-available; max-height: 100vh; overflow-x: auto; overflow-y: hidden;}
+.dash-header-wrapper{min-height:85px; background-color: #ffc107;}
+.dash-header h2{font-size: 28px; margin-bottom: 5px; font-weight: 600;}
+.dash-header p{margin-bottom: 0px; font-size: 16px;}
+.main-content{flex-grow: 1;}
+.d-title{font-size: 28px; font-weight: 600; height:68px; border-bottom: 1px solid #ffc107; padding-bottom: 30px; margin-bottom: 20px; color: #ffc107;}
+.d-title:hover{color: #ffc107 !important;}
+/* dashboard styling end */
 
 @media screen and (min-width: 1200px) and (max-width: 1399px) {
   .news-card{min-height: 465px;}

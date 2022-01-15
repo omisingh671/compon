@@ -1,5 +1,5 @@
 <?php
-include_once "layout.php";
+include_once "compon.php";
 ?>
 
 <!doctype html>
@@ -9,9 +9,9 @@ include_once "layout.php";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php Layout::siteTitle("About Us"); ?></title>
+    <title><?php Compon::siteTitle("About Us"); ?></title>
 
-    <?php Layout::stylesSheets(); ?>
+    <?php Compon::stylesSheets(); ?>
 
     <meta name="description" content="">
     <meta name="author" content="">
@@ -22,7 +22,7 @@ include_once "layout.php";
 
     <main>
 
-        <?php Layout::navbar(); ?>
+        <?php Compon::navbar(); ?>
 
         <!--about section start-->
         <section class="about section-padding">
@@ -55,6 +55,14 @@ include_once "layout.php";
                 </div>
                 <div class="row funding-institutions">
                     <div class="col-lg-3 col-sm-6">
+                        <img class="img-fluid img-thumbnail" src="images/fi/nsf_logo.png" />
+                    </div>
+
+                    <div class="col-lg-3 col-sm-6">
+                        <img class="img-fluid img-thumbnail" src="images/fi/iitk-logo.png" />
+                    </div>
+
+                    <div class="col-lg-3 col-sm-6">
                         <img class="img-fluid img-thumbnail" src="images/fi/ofi-logo.png" />
                     </div>
                     <div class="col-lg-3 col-sm-6">
@@ -73,8 +81,8 @@ include_once "layout.php";
 
     </main>
 
-    <?php Layout::footer(); ?>
-    <?php Layout::scripts(); ?>
+    <?php Compon::footer(); ?>
+    <?php Compon::scripts(); ?>
 
 </body>
 

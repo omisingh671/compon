@@ -1,5 +1,14 @@
 <?php
-include_once "layout.php";
+include_once "compon.php";
+
+$columns = "*";
+$condition = "`id`!='' AND `status`='published' ORDER BY `orderno` ASC";
+$publications = Compon::getPublications($columns, $condition);
+
+$journals = array();
+foreach($publications as $publication){
+    $journals[] = $publication["journal"];
+}
 ?>
 
 <!doctype html>
@@ -9,9 +18,9 @@ include_once "layout.php";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php Layout::siteTitle("Contact Us"); ?></title>
+    <title><?php Compon::siteTitle("Case Teams"); ?></title>
 
-    <?php Layout::stylesSheets(); ?>
+    <?php Compon::stylesSheets(); ?>
 
     <meta name="description" content="">
     <meta name="author" content="">
@@ -22,280 +31,403 @@ include_once "layout.php";
 
     <main>
 
-        <?php Layout::navbar(); ?>
+        <?php Compon::navbar(); ?>
 
-        <!--publications start-->
-        <section class="publications section-padding" id="publications">
+        <!--case teams section start-->
+        <section class="section-padding" id="case-teams-wrapper">
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="mb-4 text-center">Publications</h2>
+                        <h2 class="mb-3 text-center uppercase">Publications</h2>
                     </div>
                 </div>
-
                 <div class="row">
+                    <div class="col-lg-4 col-sm-5 col-12">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="filter-heading-main rounded"><i class="bi bi-funnel"></i> Refine</div>
+                            </div>
 
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/88">
-                                    Local Government Declarations for Net Zero Carbon Emissions </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2021</span>
+                            <div class="col-12">
+                                <div class="filter-btns d-flex justify-content-between">
+                                    <button type="button" class="btn btn-secondary flex-fill">Reset Filter</button>
+                                    <button type="button" class="btn btn-danger flex-fill">Apply Filter</button>
+                                </div>
                             </div>
-                            <div class="news-journal">
-                                Studies in informatics, Shizuoka University </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                Local governments around the world are increasingly issuing declarations to achieve net zero carbon emissions by 2050. Focusing on...
+
+                            <div class="col-12 member-types">
+                                <div class="filter-heading text-uppercase mt-3">Filter by</div>
+                                
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="year" checked>
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Year
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="country" checked>
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Country
+                                    </label>
+                                </div>
                             </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Tomoyuki Tatsumi, Takashi Nakazawa, Keiichi Satoh, Atsushi Nozawa, Kazuhiro Ikeda, Susumu Kitagawa, Masako Konishi, Gregory Trencher, Keiko Hirao, Koichi Hasegawa
+
+                            <div class="col-12">
+                                <div class="filter-heading text-uppercase mb-2">Generals</div>
+
+                                <div class="d-grid gap-2" role="group" aria-label="Basic checkbox toggle button group">
+                                    <?php
+                                    if(sizeof($journals) > 0){
+                                        $count = 1;
+                                        foreach($journals as $journal){
+                                            ?>
+                                            <input type="checkbox" class="btn-check" name="journal" id="journal-<?php echo $count; ?>" value="<?php echo $journal; ?>" autocomplete="off">
+                                            <label class="btn btn-outline-success" for="journal-<?php echo $count; ?>"><?php echo $journal; ?></label>
+                                            <?php
+                                            $count++;
+                                        }
+                                    }
+                                    else{
+                                        ?><label class="btn btn-outline-secondary">No Journal Found</label><?php
+                                    }
+                                    ?>
+                                </div>
                             </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/88">Read More</a>
+
+                            <div class="col-12 mt-4">
+                                <div class="filter-btns d-flex justify-content-between">
+                                    <button type="button" class="btn btn-secondary flex-fill">Reset Filter</button>
+                                    <button type="button" class="btn btn-danger flex-fill">Apply Filter</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/85">
-                                    REDD+ in Indonesia: A new mode of governance or just another </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
+                    <div class="col-lg-8 col-sm-7 col-12">
+
+                        <div class="search-header d-flex flex-column flex-lg-row justify-content-between align-items-center rounded">
+                            <div class="search-heading">
+                                9 matching results found
                             </div>
-                            <div class="news-journal">
-                                Forest Policy and Economics </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                <p>Reducing Emission from Deforestation and Forest Degradation (REDD+), was adopted in Indonesia with an ambitious vision to promo... </p>
+                            <div class="search-box">
+                                <form class="row g-3 align-items-center" method="post">
+                                    <div class="col-auto" style="width: calc(100% - 94px);">
+                                        <label for="search-input" class="visually-hidden">Search</label>
+                                        <input type="text" class="form-control" id="search-input" placeholder="Enter keywords to search...">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary mb-3" disabled>Search</button>
+                                    </div>
+                                </form>
                             </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Moeliono, Moira, Brockhaus, Maria, Gallemore, Caleb, Dwisatrio, Bimo, Maharani, Cynthia D., Muharrom, Efrian, Pham, Thuy Thu
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/85">Read More</a>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/77">
-                                    Incumbents' Strategies in Media Coverage: A Case of the Czec </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
+                                    <!--<div class="ct-image">
+                                        <img class="img-fluid rounded-circle" src="images/teams/mark-cj.png" />
+                                    </div>-->
+                                    <div class="ct-details">
+                                        <div class="ct-country-wrapper">
+                                            <span class="country badge bg-secondary">India</span>
+                                        </div>
+                                        <div class="ct-name">
+                                            <p><a href="https://www.tandfonline.com/doi/full/10.1080/17524032.2021.1973528?src=">Beliefs and Networks: Mapping the Indian Climate Policy Discourse Surrounding</a></p>
+                                        </div>
+                                        <div class="news-year">
+                                            <span class="badge bg-danger">2021</span>
+                                            <p><i>Environmental Communication</i></p>
+                                        </div>
+                                        <div class="ct-affiliation">
+                                            <p>Author: Pradip Swarnakar, Rajshri Shukla, and Jeffrey Broadbent</p>
+                                        </div>
+                                        <div class="ct-contact">
+                                            <p><a href="https://www.tandfonline.com/doi/full/10.1080/17524032.2021.1973528?src=">Read More</a></p>
+                                        </div>
+                                        <div class="ct-links">
+                                            <ul class="list-unstyled d-flex justify-content-start">
+                                                <!--<li><a title="https://markstoddart.academia.edu/" href="https://markstoddart.academia.edu/" class="social-icon-link bi-arrow-up-right-square"></a></li>
+                                                <li><a title="@mcjs13" href="https://twitter.com/mcjs13" class="social-icon-link bi-twitter"></a></li>-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="news-journal">
-                                Politics and Governance </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                <p>Transitioning to a decarbonized economy is a crucial part of climate change mitigation, with the phasing-out of coal, as the mo... </p>
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Černý, Ondřej, &amp; Ocelík, Petr
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/77">Read More</a>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/78">
-                                    Media Coverage and Perceived Policy Influence of Environment </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
+                                    <!--<div class="ct-image">
+                                        <img class="img-fluid rounded-circle" src="images/teams/petr-ocelik.png" />
+                                    </div>-->
+                                    <div class="ct-details">
+                                        <div class="ct-country-wrapper">
+                                            <span class="country badge bg-secondary">Finland</span>
+                                        </div>
+                                        <div class="ct-name">
+                                            <p><a href="https://www.sciencedirect.com/science/article/pii/S0959378021001278"> Polarization of climate politics results from partisan sorting: Evidence from Finnish Twittersphere</a></p>
+                                        </div>
+
+                                        <div class="news-year">
+                                            <span class="badge bg-danger">2021</span>
+                                            <p><i>Global Environmental Change</i></p>
+                                        </div>
+
+                                        <div class="ct-affiliation">
+                                            <p>Author: Ted Hsuan Yun Chen, Ali Salloum, Antti Gronow, TuomasYlä-Anttila, Mikko Kivelä </p>
+                                        </div>
+                                        <div class="ct-contact">
+                                            <p><a href="https://www.sciencedirect.com/science/article/pii/S0959378021001278">Read More</a></p>
+                                        </div>
+                                        <div class="ct-links">
+                                            <ul class="list-unstyled d-flex justify-content-start">
+                                                <!--<li><a title="https://www.researchgate.net/profile/PetrOcelik" href="https://www.researchgate.net/profile/PetrOcelik" class="social-icon-link bi-arrow-up-right-square"></a></li>
+                                                <li><a title="@PetrOcelik" href="https://twitter.com/PetrOcelik" class="social-icon-link bi-twitter"></a></li>-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="news-journal">
-                                Politics and Governance </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                <p>In this article we analyze how media coverage for environmental actors (individual environmental activists and environmental mo... </p>
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Howe, Adam C., Stoddart, Mark C. J., &amp; Tindall, David B.
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/78">Read More</a>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/76">
-                                    The Science-Policy Interface as a Discourse Network: Finland </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
+                                    <!--<div class="ct-image">
+                                        <img class="img-fluid rounded-circle" src="images/teams/ted-hasuan.png" />
+                                    </div>-->
+                                    <div class="ct-details">
+                                        <div class="ct-country-wrapper">
+                                            <span class="country badge bg-secondary">Finland</span>
+                                            <span class="country badge bg-secondary">Sweden</span>
+                                        </div>
+                                        <div class="ct-name">
+                                            <p><a href="https://onlinelibrary.wiley.com/doi/10.1111/psj.12450"> The Advocacy Coalition Index: A new approach for identifying advocacy coalitions</a></p>
+                                        </div>
+
+                                        <div class="news-year">
+                                            <span class="badge bg-danger">2021</span>
+                                            <p><i>Policy Studies Journal</i></p>
+                                        </div>
+
+                                        <div class="ct-affiliation">
+                                            <p>Author: Keiichi Satoh, Antti Gronow, Tuomas Ylä-Anttila</p>
+                                        </div>
+                                        <div class="ct-contact">
+                                            <p><a href="https://onlinelibrary.wiley.com/doi/10.1111/psj.12450">Read More</a></p>
+                                        </div>
+                                        <div class="ct-links">
+                                            <ul class="list-unstyled d-flex justify-content-start">
+                                                <!--<li><a title="https://tedhchen.com" href="https://tedhchen.com" class="social-icon-link bi-arrow-up-right-square"></a></li>
+                                                <li><a title="@tedhchen" href="https://twitter.com/tedhchen" class="social-icon-link bi-twitter"></a></li>-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="news-journal">
-                                Politics and Governance </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                <p>In this article, we argue that the science-policy interface can be understood as a discourse network constituted by discursive ... </p>
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Kukkonen, Anna, &amp; Ylä-Anttila, Tuomas
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/76">Read More</a>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/89">
-                                    Attitudes and Opinions of Mayors on “Local Agreement” fo </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
+                                    <!--<div class="ct-image">
+                                        <img class="img-fluid rounded-circle" src="images/teams/tuomas.png" />
+                                    </div>-->
+                                    <div class="ct-details">
+                                        <div class="ct-country-wrapper">
+                                            <span class="country badge bg-secondary">Canada</span>                
+                                        </div>
+                                        <div class="ct-name">
+                                            <p><a href="https://www.tandfonline.com/doi/abs/10.1080/17524032.2021.1969978"> Competing Crises? Media Coverage and Framing of Climate Change During the COVID-19 Pandemic</a></p>
+                                        </div>
+
+                                        <div class="news-year">
+                                            <span class="badge bg-danger">2021</span>
+                                            <p><i>Environmental Communication</i></p>
+                                        </div>
+
+                                        <div class="ct-affiliation">
+                                            <p>Author: Mark C. J. Stoddart, Howard Ramos, Karen Foster & Tuomas Ylä-Anttila</p>
+                                        </div>
+                                        <div class="ct-contact">
+                                            <p><a href="https://www.tandfonline.com/doi/abs/10.1080/17524032.2021.1969978">Read More</a></p>
+                                        </div>
+                                        <div class="ct-links">
+                                            <!--<ul class="list-unstyled d-flex justify-content-start">
+                                                <li><a title="https://bit.ly/tuomas_y" href="https://bit.ly/tuomas_y" class="social-icon-link bi-arrow-up-right-square"></a></li>-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="news-journal">
-                                Studies in informatics, Shizuoka University </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                <p>The purpose of this research is to understand the attitudes and opinions of mayors on "local agreement" over the restart of Ham... </p>
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Tomoyuki Tatsumi, Takashi Nakazawa
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/89">Read More</a>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/71">
-                                    Actors and justifications in media debates on Arctic climate </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
+                                    <!--<div class="ct-image">
+                                        <img class="img-fluid rounded-circle" src="images/teams/anna-kukkonen.png" />
+                                    </div>-->
+                                    <div class="ct-details">
+                                        <div class="ct-country-wrapper">
+                                            <span class="country badge bg-secondary">Canada</span>
+                                        </div>
+                                        <div class="ct-name">
+                                            <p><a href="https://www.sciencedirect.com/science/article/pii/S0378873321000502"> Drivers of tie formation in the Canadian climate change policy network: Belief homophily</a></p>
+                                        </div>
+
+                                        <div class="news-year">
+                                            <span class="badge bg-danger">2021</span>
+                                            <p><i>Social Networks</i></p>
+                                        </div>
+
+                                        <div class="ct-affiliation">
+                                            <p>Author: Adam C.Howe, David B.Tindall, Marck C.J.Stoddart</p>
+                                        </div>
+                                        <div class="ct-contact">
+                                            <p><a href="https://www.sciencedirect.com/science/article/pii/S0378873321000502">Read More</a></p>
+                                        </div>
+                                        <div class="ct-links">
+                                            <ul class="list-unstyled d-flex justify-content-start">
+                                                <!--<li><a title="https://researchportal.helsinki.fi/en/persons/anna-kukkonen" href="https://researchportal.helsinki.fi/en/persons/anna-kukkonen" class="social-icon-link bi-arrow-up-right-square"></a></li>
+                                                <li><a title="@kukkonen_anna" href="https://twitter.com/kukkonen_anna" class="social-icon-link bi-twitter"></a></li>-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="news-journal">
-                                Acta Sociologica </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                In this paper, we examine the centrality of policy actors and moral justifications in media debates on Arctic climate change in Fi...
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Kukkonen, Anna, Stoddart, Mark C., &amp; Ylä-Anttila, Tuomas
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/71">Read More</a>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/86">
-                                    Climate change policy networks: connecting adaptation and mi </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
+                                    <!--<div class="ct-image">
+                                        <img class="img-fluid rounded-circle" src="images/teams/arttu.png" />
+                                    </div>-->
+                                    <div class="ct-details">
+                                        <div class="ct-country-wrapper">
+                                            <span class="country badge bg-secondary">Canada</span>
+                                        </div>
+                                        <div class="ct-name">
+                                            <p><a href="https://journals.sagepub.com/doi/abs/10.1177/0731121420908886"> Drivers of tie formation in the Canadian climate change policy network: Belief homophily</a></p>
+                                        </div>
+
+                                         <div class="news-year">
+                                            <span class="badge bg-danger">2021</span>
+                                            <p><i>Sociological Perspectives</i></p>
+                                        </div>
+
+                                        <div class="ct-affiliation">
+                                            <p>Author: David B Tindall, Adam C Howe, Céline Mauboulès </p>
+                                        </div>
+                                        <div class="ct-contact">
+                                            <p><a href="https://journals.sagepub.com/doi/abs/10.1177/0731121420908886">Read More</a></p>
+                                        </div>
+                                        <div class="ct-links">
+                                            <ul class="list-unstyled d-flex justify-content-start">
+                                                <!--<li><a title="https://researchportal.helsinki.fi/en/persons/arttu-malkam%C3%A4ki" href="https://researchportal.helsinki.fi/en/persons/arttu-malkam%C3%A4ki" class="social-icon-link bi-arrow-up-right-square"></a></li>
+                                                <li><a title="@ArttuMalkamaki" href="https://twitter.com/ArttuMalkamaki" class="social-icon-link bi-twitter"></a></li>-->
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="news-journal">
-                                Climate Policy </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                Increasing attention is being given to integrating adaptation and mitigation in climate change policies. Policy network analysis i...
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Locatelli, Bruno, Pramova, Emilia, Di Gregorio, Monica, Brockhaus, Maria, Armas Chávez, Dennis, Tubbeh, Ramzi, Sotés, Juan &amp; Perla, Javier
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/86">Read More</a>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/73">
-                                    Information Exchange Networks at the Climate Science-Policy </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
+                        <!--<div class="row">
+                            <div class="col-12">
+                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
+                                    <div class="ct-image">
+                                        <img class="img-fluid rounded-circle" src="images/teams/paul-wagner.png" />
+                                    </div>
+                                    <div class="ct-details">
+                                        <div class="ct-country-wrapper">
+                                            <span class="country badge bg-secondary">Ireland</span>
+                                        </div>
+                                        <div class="ct-name">
+                                            <p>Paul Wagner</p>
+                                        </div>
+                                        <div class="ct-affiliation">
+                                            <p>Northumbria University</p>
+                                        </div>
+                                        <div class="ct-contact">
+                                            <p><a title="paul.wagner@northumbria.ac.uk" href="mailto:paul.wagner@northumbria.ac.uk">paul.wagner@northumbria.ac.uk</a></p>
+                                        </div>
+                                        <div class="ct-links">
+                                            <ul class="list-unstyled d-flex justify-content-start">
+                                                <li><a title="@mpaulwagner" href="https://twitter.com/mpaulwagner" class="social-icon-link bi-twitter"></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="news-journal">
-                                Governance </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                Scientifically informed climate policymaking starts with the exchange of credible, salient, and legitimate scientific information ...
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Wagner, Paul, Gronow, Antti, Ylä-Anttila, Tuomas, Ocelik, Petr &amp; Schmidt, Luisa
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/73">Read More</a>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/75">
-                                    When Climate is not Blamed: The politics of disaster attribu </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
+                                    <div class="ct-image">
+                                        <img class="img-fluid rounded-circle" src="images/teams/pradeep.png" />
+                                    </div>
+                                    <div class="ct-details">
+                                        <div class="ct-country-wrapper">
+                                            <span class="country badge bg-secondary">India</span>
+                                        </div>
+                                        <div class="ct-name">
+                                            <p>Pradip Swarnakar</p>
+                                        </div>
+                                        <div class="ct-affiliation">
+                                            <p>Indian Institute of Technology Kanpur</p>
+                                        </div>
+                                        <div class="ct-contact">
+                                            <p><a title="spradip@iitk.ac.in" href="mailto:spradip@iitk.ac.in">spradip@iitk.ac.in</a></p>
+                                        </div>
+                                        <div class="ct-links">
+                                            <ul class="list-unstyled d-flex justify-content-start">
+                                                <li><a title="https://home.iitk.ac.in/~spradip" href="https://home.iitk.ac.in/~spradip" class="social-icon-link bi-arrow-up-right-square"></a></li>
+                                                <li><a title="@ps_iitk" href="https://twitter.com/ps_iitk" class="social-icon-link bi-twitter"></a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="news-journal">
-                                Climatic Change </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                Analyzing the politics and policy implications in Brazil of attributing extreme weather events to climate change, we argue for gre...
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Lahsen, Myanna, de Azevedo Couto, Gabriela &amp; Lorenzoni, Irene
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/75">Read More</a>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/72">
-                                    Explaining collaboration in consensual and conflictual gover </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2019</span>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
+                                    <div class="ct-image">
+                                        <img class="img-fluid rounded-circle" src="images/teams/jeffery.png" />
+                                    </div>
+                                    <div class="ct-details">
+                                        <div class="ct-country-wrapper">
+                                            <span class="country badge bg-secondary">US</span>
+                                            <span class="country badge bg-secondary">Japan</span>
+                                            <span class="country badge bg-secondary">meta-analysis</span>
+                                        </div>
+                                        <div class="ct-name">
+                                            <p>Jeff Broadbent</p>
+                                        </div>
+                                        <div class="ct-affiliation">
+                                            <p>University of Minnesota</p>
+                                        </div>
+                                        <div class="ct-contact">
+                                            <p><a title="broad001@umn.edu" href="broad001@umn.edu">mailto:broad001@umn.edu</a></p>
+                                        </div>
+                                        <div class="ct-links d-none">
+                                            <!-- <ul class="list-unstyled d-flex justify-content-start">
+                                                <li><a title="https://markstoddart.academia.edu/" href="https://markstoddart.academia.edu/" class="social-icon-link bi-arrow-up-right-square"></a></li>
+                                                <li><a title="@mcjs13" href="https://twitter.com/mcjs13" class="social-icon-link bi-twitter"></a></li>
+                                            </ul> -->
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="news-journal">
-                                Public Administration </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                The conditions under which policy beliefs and influential actors shape collaborative behaviour in governance networks are not well...
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Gronow, Antti, Wagner, Paul &amp; Ylä-Anttila, Tuomas
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/72">Read More</a>
                         </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/84">
-                                    Identifying the ‘Fukushima Effect’: in Germany through p </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2019</span>
-                            </div>
-                            <div class="news-journal">
-                                Quality &amp; Quantity </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                The nuclear meltdown in Fukushima, Japan, on March 11, 2011 (“3.11”) prompted global changes in national energy policies. Publ...
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Hartwig, Manuela and Tkach-Kawasaki, Leslie
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/84">Read More</a>
-                        </div>
+
                     </div>
                 </div>
             </div>
         </section>
-        <!--publications end-->
+        <!--case teams section end-->
 
     </main>
 
-    <?php Layout::footer(); ?>
-    <?php Layout::scripts(); ?>
+    <?php Compon::footer(); ?>
+    <?php Compon::scripts(); ?>
 
 </body>
 

@@ -17,29 +17,46 @@
 </head>
 
 <body>
-    <section id="dashboard" class="d-flex">
-        <div class="sidebar">
-            <?php Compon::adminNavbar(); ?>
+    <section class="dashboard" id="dashboard" class="d-flex">
+        <div class="admin-sidebar">
+            <div id="admin-navbar" class="d-flex flex-column vh-100 flex-shrink-0 p-3 text-white bg-dark">
+
+                <a href="index.php" class="d-flex justify-content-center text-decoration-none d-title">
+                    Compon
+                </a>
+
+            </div>
         </div>
-        <div class="main-content">
+        <div class="main-content d-flex flex-column align-items-stretch bg-white">
 
             <!--page header start-->
-            <div class="admin-page-header">
-                <div class="dash-header">
-                    <h2>Compon :: Admin Login</h2>
-                    <p>Please login first to proceed further.</p>
+            <div class="container-fluid border-bottom mb-2 dash-header-wrapper">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="dash-header pb-2">
+                            <h2>Compon Dashboard</h2>
+                            <p>Comparing Climate Change Policy Networks Compon</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!--page header end-->
 
+            <?php
+            // $publications = Compon::auth("admin", "amar@compon");
+            // echo "<pre>" . var_dump($publications) . "</pre>";
+            // echo $publications[0]["username"]."<br />";
+            // echo sizeof($publications);
+            ?>
             <!--page content wrapper start-->
-            <div class="container-fluid d-flex align-items-center" style="height:calc(100vh - 80px) !important;">
+            <div class="scrollarea">
+                <!--page content wrapper start-->
                 <div class="rounded d-flex justify-content-center" style="width: 100%;">
                     <div class="col-lg-6 col-sm-12 shadow-lg p-5 bg-light">
                         <div class="text-center">
                             <h3 class="text-primary">Sign In</h3>
                         </div>
-                        <form action="../handle-requests.php" method="post" enctype="multipart/form-data" name="auth-form">
+                        <form action="forms.php" method="post" enctype="multipart/form-data" name="auth-form">
                             <div class="p-4">
                                 <div class="input-group mb-3">
                                     <span class="input-group-text bg-primary"><i class="bi bi-person-plus-fill text-white"></i></span>
@@ -58,13 +75,15 @@
                                 <button class="btn btn-primary text-center mt-2" type="submit" name="auth" value="auth">
                                     Login
                                 </button>
-                                <p style="margin-top: 30px;" class="text-center2"><a class="text-primary" href="password-reset.php">Forgot your password?</a></p>
+                                <p style="margin-top: 30px;" class="text-center2"><a class="text-primary" href="javascript:void(0);">Forgot your password?</a></p>
                             </div>
                         </form>
                     </div>
                 </div>
+                <!--page content wrapper end-->
             </div>
             <!--page content wrapper end-->
+
         </div>
     </section>
 

@@ -1,5 +1,5 @@
 <?php
-include_once "layout.php";
+include_once "compon.php";
 ?>
 
 <!doctype html>
@@ -9,9 +9,9 @@ include_once "layout.php";
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title><?php Layout::siteTitle("Case Teams"); ?></title>
+    <title><?php Compon::siteTitle("Case Teams"); ?></title>
 
-    <?php Layout::stylesSheets(); ?>
+    <?php Compon::stylesSheets(); ?>
 
     <meta name="description" content="">
     <meta name="author" content="">
@@ -22,7 +22,7 @@ include_once "layout.php";
 
     <main>
 
-        <?php Layout::navbar(); ?>
+        <?php Compon::navbar(); ?>
 
         <!--case teams section start-->
         <section class="section-padding" id="case-teams-wrapper">
@@ -69,7 +69,7 @@ include_once "layout.php";
                             </div>
 
                             <div class="col-12">
-                                <div class="filter-heading text-uppercase mt-3 mb-2">Disciplines</div>
+                                <div class="filter-heading text-uppercase mt-3 mb-2">Generals</div>
 
                                 <div class="d-grid gap-2" role="group" aria-label="Basic checkbox toggle button group">
                                     <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off">
@@ -399,8 +399,8 @@ include_once "layout.php";
 
     </main>
 
-    <?php Layout::footer(); ?>
-    <?php Layout::scripts(); ?>
+    <?php Compon::footer(); ?>
+    <?php Compon::scripts(); ?>
 
 </body>
 

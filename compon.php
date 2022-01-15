@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+
 session_start();
 require_once "config/crud.php";
 $crud = new Crud;
@@ -9,47 +11,6 @@ class Compon{
 		die("Initialization of layout class not allowed!");
 	}
 	
-    private static $site_title = "Compon";
-    
-    # tables start
-    private static $table_users = "compon_users";
-    private static $table_publications = "compon_publications";
-    private static $table_members = "compon_members";
-    # tables start
-
-    ################### CRUD Functions Start Here ###################
-    
-    public static function auth($username, $password){
-        global $crud;
-        $user = null;
-        $where_condition = "username='$username' AND userauth='$password' LIMIT 1";
-        $user = $crud->getRow(self::$table_users, "*", $where_condition);
-        return $user;
-    }
-
-    public static function getPublications($columns, $where_condition){
-        global $crud;
-        return $records = $crud->getRow(self::$table_publications, $columns, $where_condition);
-    }
-    
-    ################### CRUD Functions End Here ###################
-
-    /* Utility Functions Start Here */
-
-    # actual link method start
-    public static function actualLink(){
-        return $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-    }
-    # actual link method end
-
-	# site title method start
-	public static function siteTitle($title){
-		echo self::$site_title." | ".$title;
-	}
-    # site title end
-
-    /* Utility Functions End Here */
-
     /* Page Layout Functions Start Here */
 
     # ie responsive fix start
@@ -167,7 +128,7 @@ class Compon{
     # admin page scripts start
 	public static function adminScripts(){
         ?>
-        <script src="../js/jquery.min.js"></script>
+        <script src="../js/jqueryv3.6.0.min.js"></script>
         <script src="../js/bootstrap.bundle.min.js"></script>
         <script src="../js/custom.js"></script>
         <?php
@@ -179,30 +140,16 @@ class Compon{
         ?>
         <div id="admin-navbar" class="d-flex flex-column vh-100 flex-shrink-0 p-3 text-white bg-dark">
             
-            <a href="index.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-                <span class="fs-4">Compon Dashboard</span>
+            <a href="index.php" class="d-flex justify-content-center text-decoration-none d-title">
+                Compon
             </a>
-            
-            <hr>
 
             <ul class="nav nav-pills flex-column mb-auto">
                 <li><a href="index.php" class="nav-link text-white"><i class="bi bi-speedometer"></i> <span class="ms-2">Dashboard</span></a></li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle text-white" id="publicationsDMLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-journal-check"></i> <span class="ms-2">Publications</span>
+                <li>
+                    <a href="manage-publications.php" class="nav-link text-white">
+                        <i class="bi bi-journal-check"></i> <span class="ms-2">Manage Publications</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="publicationsDMLink">
-                        <li>
-                            <a class="dropdown-item" href="create-publication.php">
-                                <i class="bi bi-pencil"></i> <span class="ms-2">Create New</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <i class="bi bi-gear"></i> <span class="ms-2">Manage</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle text-white" id="caseTeamsDMLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -245,16 +192,14 @@ class Compon{
             
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2"><strong>Admin</strong>
+                    <span style="margin-right: 10px;" class="fs-3"><i class="bi bi-sliders"></i></span> <strong>Control Panel</strong>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-                    <li><a class="dropdown-item" href="#">New project</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person-fill"></i> Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="logout.php"><i class="bi bi-power"></i> Sign Out</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="../index.php" target="_blank"><i class="bi bi-globe"></i> Visit Compon</a></li>
                 </ul>
             </div>
 
@@ -264,4 +209,80 @@ class Compon{
     # admin navbar end
 
     /* Page Layout Functions End Here */
+
+    # tables start
+    private static $table_users = "compon_users";
+    private static $table_publications = "compon_publications";
+    private static $table_members = "compon_members";
+    # tables start
+
+    ################### CRUD Functions Start Here ###################
+
+    private static $site_title = "Compon";
+    
+    # auth start
+    public static function auth($username, $password){
+        global $crud;
+        $user = null;
+        $password = md5($password);
+        $where_condition = "username='$username' AND userauth='$password' LIMIT 1";
+        $user = $crud->getRow(self::$table_users, "*", $where_condition);
+        return $user;
+    }
+
+    public static function isLoggedIn(){
+        if(isset($_SESSION["user"]) && ($_SESSION["user"] != "")){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static function isAdmin(){
+        if(isset($_SESSION["user"]) && ($_SESSION["user"] != "")){
+            return true;
+        }
+        else{
+            header('Location: ../index.php'); exit;
+        }
+    }
+    # auth end
+
+    public static function getPublications($columns, $where_condition){
+        global $crud;
+        $records = $crud->getRow(self::$table_publications, $columns, $where_condition);
+        return $records;
+    }
+
+    public static function createPublication($form_data){
+        global $crud;
+        $id = $crud->insertRow(self::$table_publications, $form_data);
+        return $id;
+    }
+
+    public static function updatePublication($form_data, $id){
+        global $crud;
+        $where = "id=$id";
+        $status = $crud->updateRow(self::$table_publications, $form_data, $where);
+        return $status;
+    }
+    
+    ################### CRUD Functions End Here ###################
+
+    /* Utility Functions Start Here */
+
+    # actual link method start
+    public static function actualLink(){
+        return $actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    }
+    # actual link method end
+
+	# site title method start
+	public static function siteTitle($title){
+		echo self::$site_title." | ".$title;
+	}
+    # site title end
+
+    /* Utility Functions End Here */
 }

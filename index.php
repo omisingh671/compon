@@ -36,7 +36,7 @@ include_once "compon.php";
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h2 class="mb-3 text-center uppercase">Comparing Climate Change Policy Networks<br />Compon</h2>
+                        <h2 class="mb-3 text-center uppercase">Comparing Climate Change Policy Networks<br />compon</h2>
                         <p class="mb-2 text-center">Research focussing on meso-level policy networks sheds light on what organizations exert influence on policy making</p>
 
                         <div class="text-center mt-3"><a class="btn btn-primary text-center" href="about.php">About Compon</a></div>
@@ -54,132 +54,40 @@ include_once "compon.php";
                     <div class="col-12">
                         <h2 class="mb-4 text-center">Most Recent Publications</h2>
                     </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/88">
-                                    Local Government Declarations for Net Zero Carbon Emissions </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2021</span>
-                            </div>
-                            <div class="news-journal">
-                                Studies in informatics, Shizuoka University </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                Local governments around the world are increasingly issuing declarations to achieve net zero carbon emissions by 2050. Focusing on...
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Tomoyuki Tatsumi, Takashi Nakazawa, Keiichi Satoh, Atsushi Nozawa, Kazuhiro Ikeda, Susumu Kitagawa, Masako Konishi, Gregory Trencher, Keiko Hirao, Koichi Hasegawa
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/88">Read More</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/85">
-                                    REDD+ in Indonesia: A new mode of governance or just another </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
-                            </div>
-                            <div class="news-journal">
-                                Forest Policy and Economics </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                <p>Reducing Emission from Deforestation and Forest Degradation (REDD+), was adopted in Indonesia with an ambitious vision to promo... </p>
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Moeliono, Moira, Brockhaus, Maria, Gallemore, Caleb, Dwisatrio, Bimo, Maharani, Cynthia D., Muharrom, Efrian, Pham, Thuy Thu
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/85">Read More</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/77">
-                                    Incumbents' Strategies in Media Coverage: A Case of the Czec </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
-                            </div>
-                            <div class="news-journal">
-                                Politics and Governance </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                <p>Transitioning to a decarbonized economy is a crucial part of climate change mitigation, with the phasing-out of coal, as the mo... </p>
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Černý, Ondřej, &amp; Ocelík, Petr
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/77">Read More</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/78">
-                                    Media Coverage and Perceived Policy Influence of Environment </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
-                            </div>
-                            <div class="news-journal">
-                                Politics and Governance </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                <p>In this article we analyze how media coverage for environmental actors (individual environmental activists and environmental mo... </p>
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Howe, Adam C., Stoddart, Mark C. J., &amp; Tindall, David B.
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/78">Read More</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/76">
-                                    The Science-Policy Interface as a Discourse Network: Finland </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
-                            </div>
-                            <div class="news-journal">
-                                Politics and Governance </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                <p>In this article, we argue that the science-policy interface can be understood as a discourse network constituted by discursive ... </p>
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Kukkonen, Anna, &amp; Ylä-Anttila, Tuomas
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/76">Read More</a>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6">
-                        <div class="news-card card mb-3">
-                            <h6>
-                                <a href="http://h197.it.helsinki.fi/en/node/89">
-                                    Attitudes and Opinions of Mayors on “Local Agreement” fo </a>
-                            </h6>
-                            <div class="news-year">
-                                <span class="badge bg-danger">2020</span>
-                            </div>
-                            <div class="news-journal">
-                                Studies in informatics, Shizuoka University </div>
-                            <div class="news-desc">
-                                <p><strong>Abstract</strong></p>
-                                <p>The purpose of this research is to understand the attitudes and opinions of mayors on "local agreement" over the restart of Ham... </p>
-                            </div>
-                            <div class="news-authors">
-                                <strong>Authors: </strong>Tomoyuki Tatsumi, Takashi Nakazawa
-                            </div>
-                            <a class="custom-link" href="http://h197.it.helsinki.fi/en/node/89">Read More</a>
-                        </div>
-                    </div>
+                    <?php
+                        $p_fields = "*";
+                        $p_condition = "`id`!='' AND `status`='published' ORDER BY `orderno` ASC";
+                        $publications = Compon::getPublications($p_fields, $p_condition);
+                        
+                        if(sizeof($publications) > 0){
+                            foreach($publications as $publication){
+                                ?>
+                                <div class="col-lg-4 col-sm-6">
+                                    <div class="news-card card mb-3">
+                                        <h6>
+                                            <a target="_blank" href="<?php echo $publication["publicationlink"]; ?>">
+                                                <?php echo $publication["title"]; ?>
+                                            </a>
+                                        </h6>
+                                        <div class="news-year">
+                                            <span class="badge bg-danger"><?php echo $publication["year"]; ?></span>
+                                        </div>
+                                        <div class="news-journal">
+                                            <em><?php echo $publication["journal"]; ?></em></div>
+
+                                        <div class="news-authors">
+                                            <strong>Authors:</strong> <?php echo $publication["authors"]; ?>
+                                        </div>
+                                        <a class="custom-link" href="<?php echo $publication["publicationlink"]; ?>">Read More</a>
+                                    </div>
+                                </div>
+                                <?php
+                            }
+                        }
+                        else{
+                            ?><div class="col-12"><div class="card"><h6 class="text-center">No Publication found!</h6></div></div><?php
+                        }
+                    ?>
                 </div>
             </div>
         </section>
@@ -283,8 +191,8 @@ include_once "compon.php";
         <!--steering committee section end-->
     </main>
 
-    <?php Compon::footer(); ?>
-    <?php Compon::scripts(); ?>
+    <?php Layout::footer(); ?>
+    <?php Layout::scripts(); ?>
 
 </body>
 

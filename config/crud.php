@@ -71,7 +71,7 @@ class CRUD{
 			else{
 				$error = $stmt->errorInfo();
 				//echo $error[2];exit;
-				return 0;
+				return false;
 			}
 		}
 		catch(PDOException $e){
