@@ -79,10 +79,6 @@ class Compon{
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="projects.php">Projects</a>
-                        </li>
-
-                        <li class="nav-item">
                             <a class="nav-link" href="contact.php">Contact Us</a>
                         </li>
                     </ul>
@@ -145,47 +141,23 @@ class Compon{
             </a>
 
             <ul class="nav nav-pills flex-column mb-auto">
-                <li><a href="index.php" class="nav-link text-white"><i class="bi bi-speedometer"></i> <span class="ms-2">Dashboard</span></a></li>
+                <li>
+                    <a href="index.php" class="nav-link text-white">
+                        <i class="bi bi-speedometer"></i> <span class="ms-2">Dashboard</span>
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
                 <li>
                     <a href="manage-publications.php" class="nav-link text-white">
                         <i class="bi bi-journal-check"></i> <span class="ms-2">Manage Publications</span>
                     </a>
                 </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle text-white" id="caseTeamsDMLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-people"></i> <span class="ms-2">Case Teams</span>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a href="manage-publications.php" class="nav-link text-white">
+                        <i class="bi bi-people"></i> <span class="ms-2">Manage Case Teams</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="caseTeamsDMLink">
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <i class="bi bi-pencil"></i> <span class="ms-2">Create New</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <i class="bi bi-gear"></i> <span class="ms-2">Manage</span>
-                            </a>
-                        </li>
-                    </ul>
                 </li>
-                <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle text-white" id="projectsDMLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-briefcase"></i> <span class="ms-2">Projects</span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="projectsDMLink">
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <i class="bi bi-pencil"></i> <span class="ms-2">Create New</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">
-                                <i class="bi bi-gear"></i> <span class="ms-2">Manage</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <li><a href="#" class="nav-link text-white"><i class="bi bi-bar-chart"></i> <span class="ms-2">Charts</span></a></li>
             </ul>
 
             <hr>
@@ -249,6 +221,39 @@ class Compon{
     }
     # auth end
 
+    public static function rawSQL($sql){
+        global $crud;
+        $stmt = $crud->runQuery($sql);
+        return $stmt;
+    }
+
+    # total page - for paging start
+    public static function totalPublicationPages($records_per_page, $where){
+        global $crud;
+        $tp_table = self::$table_publications;
+        $tp_sql = "SELECT `id` FROM $tp_table WHERE $where";
+        $total_pages = $crud->getTotalPages($records_per_page, $tp_sql);
+        return $total_pages;
+    }
+
+    public static function totalTMPages($records_per_page, $where){
+        global $crud;
+        $tp_table = self::$table_members;
+        $tp_sql = "SELECT `id` FROM $tp_table WHERE $where";
+        $total_pages = $crud->getTotalPages($records_per_page, $tp_sql);
+        return $total_pages;
+    }
+    # total page - for paging end
+
+    #paging range start
+    public static function pagingRange($page, $total_pages, $adjacents){
+        global $crud;
+        $pagination_range = $crud->paginationRange($page, $total_pages, $adjacents);
+        return $pagination_range;
+    }
+    # paging range end
+
+    # publication start
     public static function getPublications($columns, $where_condition){
         global $crud;
         $records = $crud->getRow(self::$table_publications, $columns, $where_condition);
@@ -267,8 +272,15 @@ class Compon{
         $status = $crud->updateRow(self::$table_publications, $form_data, $where);
         return $status;
     }
-    
-    ################### CRUD Functions End Here ###################
+    # publication end
+
+    # case team start
+    public static function getCaseTeamMembers($columns, $where_condition){
+        global $crud;
+        $records = $crud->getRow(self::$table_members, $columns, $where_condition);
+        return $records;
+    }
+    # case team end
 
     /* Utility Functions Start Here */
 
@@ -283,6 +295,28 @@ class Compon{
 		echo self::$site_title." | ".$title;
 	}
     # site title end
+
+    # reset filter start
+    public static function resetFilter(){
+        unset($_SESSION["orderby"]);
+        unset($_SESSION["orderby_filter"]);
+        unset($_SESSION["journals"]);
+        unset($_SESSION["journals_filter"]);
+        unset($_SESSION["membertype"]);
+    }
+    public static function resetAllFilterAndSearch(){
+        unset($_SESSION["orderby"]);
+        unset($_SESSION["orderby_filter"]);
+        unset($_SESSION["journals"]);
+        unset($_SESSION["journals_filter"]);
+        unset($_SESSION["keyword_publication"]);
+        unset($_SESSION["keyword_tm"]);
+    }
+    public static function resetSearch(){
+        unset($_SESSION["keyword_publication"]);
+        unset($_SESSION["keyword_tm"]);
+    }
+    # reset filter end
 
     /* Utility Functions End Here */
 }

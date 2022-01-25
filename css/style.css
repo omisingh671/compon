@@ -150,7 +150,7 @@ b,strong {font-weight: var(--font-weight-bold);}
 /* publications section end */
 
 /* our team start*/
-.team-image{width: auto; height: 190px; object-fit: contain; margin-left: auto;
+.team-image{width: auto; height: 240px; object-fit: contain; margin-left: auto;
   margin-right: auto; display: table; margin-bottom: 15px; border-radius: 50%; border-top: 3px solid #fff; border-bottom: 3px solid #ddd; box-shadow: 0px 5px 10px -5px #c6d2dc;}
 
 .team-box-wrapper:hover .team-box{border-color: var(--primary-color) !important;}
@@ -181,7 +181,7 @@ b,strong {font-weight: var(--font-weight-bold);}
 .search-box button{margin-bottom: 0px !important;}
 .search-heading{font-size: var(--p-font-size); color: (var(--p-color)); font-weight: var(--font-weight-light);}
 
-.filter-btns{margin-bottom: 10px;}
+.filter-btns{margin-bottom: 10px; padding: 15px 10px; background-color: #efefef; border-radius: 3px}
 .filter-btns button:first-child{margin-right: 7px;}
 .filter-btns button:last-child{margin-left: 7px;}
 

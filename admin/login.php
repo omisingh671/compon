@@ -41,13 +41,7 @@
                 </div>
             </div>
             <!--page header end-->
-
-            <?php
-            // $publications = Compon::auth("admin", "amar@compon");
-            // echo "<pre>" . var_dump($publications) . "</pre>";
-            // echo $publications[0]["username"]."<br />";
-            // echo sizeof($publications);
-            ?>
+            
             <!--page content wrapper start-->
             <div class="scrollarea">
                 <!--page content wrapper start-->

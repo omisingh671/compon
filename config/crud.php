@@ -28,12 +28,11 @@ class CRUD{
 				$whereSQL = " ".$where;
 			}
 		}
-		$sql = "SELECT ".$col." FROM ".$table." ".$whereSQL;
+		$sql = "SELECT ".$col." FROM ".$table." ".$whereSQL; //echo $sql;
 		try{
 			$pdo = Database::connect();
 			$stmt = $pdo->prepare($sql);
 			Database::disconnect();
-
 			if(! $stmt->execute()){
 				return false;
 				//$error = $stmt->errorInfo();
@@ -263,7 +262,7 @@ class CRUD{
 		$stmt = $this->runQuery($tp_sql);
     	$total_rows_count = $stmt->rowCount();
 		$total_pages = ceil($total_rows_count / $records_per_page);
-		return $total_pages;
+		return array($total_pages, $total_rows_count);
 	}
 
 	function paginationRange($page, $total_pages, $adjacents){

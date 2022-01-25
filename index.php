@@ -18,7 +18,7 @@ include_once "compon.php";
 
 </head>
 
-<body>
+<body id="home">
 
     <main>
 
@@ -26,7 +26,7 @@ include_once "compon.php";
 
         <!--hero section start-->
         <section class="hero-section" style="position: relative;">
-            <img style="max-width: 100%;" src="images/bg1.jpg" />
+            <img style="max-width: 100%;" src="images/bg-main.jpg" />
             <div class="overlay"></div>
         </section>
         <!--hero section end-->
@@ -56,7 +56,7 @@ include_once "compon.php";
                     </div>
                     <?php
                         $p_fields = "*";
-                        $p_condition = "`id`!='' AND `status`='published' ORDER BY `orderno` ASC";
+                        $p_condition = "`id`!='' AND `status`='published' AND `isfeatured`='1' ORDER BY `orderno` ASC LIMIT 0, 6";
                         $publications = Compon::getPublications($p_fields, $p_condition);
                         
                         if(sizeof($publications) > 0){
@@ -100,99 +100,42 @@ include_once "compon.php";
                     <div class="col-12">
                         <h2 class="mb-4 text-center">Steering Committee</h2>
                     </div>
+                    <?php
+                    $tm_fields = "*";
+                    $tm_condition = "`id`!='' AND `status`='published' AND `membertype`='Steering Committee Member' ORDER BY `orderno` ASC";
+                    $members = Compon::getCaseTeamMembers($tm_fields, $tm_condition);
+                    if(sizeof($members) > 0){
+                        foreach($members as $member){
+                            ?>
+                            <div class="col-lg-4 col-sm-6 team-box-wrapper mb-3">
+                                <div class="team-box">
+                                    <img class="team-image" src="images/members/<?php if(isset($member["photo"]) && $member["photo"] != "") echo $member["photo"]; else echo "ct-dummy.jpg"; ?>" />
+                                    <h3 class="text-center"><?php echo $member["name"]; ?></h3>
+                                    <p class="text-center"><?php echo $member["university"]; ?></p>
+                                    <p class="text-center"><?php echo $member["country"]; ?></p>
 
-                    <div class="col-lg-4 col-sm-6 team-box-wrapper mb-3">
-                        <div class="team-box">
-                            <img class="team-image" src="images/teams/jeffery.png" />
-                            <h3 class="text-center">Jeffrey Broadbent</h3>
-                            <p class="text-center">University of Minnesota</p>
-                            <p class="text-center">United States</p>
-
-                            <ul class="team-links list-unstyled d-flex justify-content-evenly">
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-twitter"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-linkedin"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 team-box-wrapper mb-3">
-                        <div class="team-box">
-                            <img class="team-image" src="images/teams/tuomas.png" />
-                            <h3 class="text-center">Tuomas Ylä-Anttila</h3>
-                            <p class="text-center">University of Helsinki</p>
-                            <p class="text-center">Finland</p>
-
-                            <ul class="team-links list-unstyled d-flex justify-content-evenly">
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-twitter"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-linkedin"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 team-box-wrapper mb-3">
-                        <div class="team-box">
-                            <img class="team-image" src="images/teams/pradeep.png" />
-                            <h3 class="text-center">Pradip Swarnakar</h3>
-                            <p class="text-center">Indian Institute of Technology Kanpur</p>
-                            <p class="text-center">India</p>
-
-                            <ul class="team-links list-unstyled d-flex justify-content-evenly">
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-twitter"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-linkedin"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 team-box-wrapper">
-                        <div class="team-box">
-                            <img class="team-image" src="images/teams/antti.png" />
-                            <h3 class="text-center">Antti Gronow</h3>
-                            <p class="text-center">University of Helsinki</p>
-                            <p class="text-center">Finland</p>
-
-                            <ul class="team-links list-unstyled d-flex justify-content-evenly">
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-twitter"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-linkedin"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 team-box-wrapper">
-                        <div class="team-box">
-                            <img class="team-image" src="images/teams/keiichi.png" />
-                            <h3 class="text-center">Keiichi Satoh</h3>
-                            <p class="text-center">Hitotsubashi University</p>
-                            <p class="text-center">Japan</p>
-
-                            <ul class="team-links list-unstyled d-flex justify-content-evenly">
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-twitter"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-linkedin"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 team-box-wrapper">
-                        <div class="team-box">
-                            <img class="team-image" src="images/teams/marlene.png" />
-                            <h3 class="text-center">Marlene Kammerer</h3>
-                            <p class="text-center">Universität Bern</p>
-                            <p class="text-center">Switzerland</p>
-
-                            <ul class="team-links list-unstyled d-flex justify-content-evenly">
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-twitter"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-linkedin"></a></li>
-                                <li><a href="javascript:void(0);" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                            </ul>
-                        </div>
-                    </div>
+                                    <ul class="team-links list-unstyled d-flex justify-content-evenly">
+                                        <li><a href="<?php if(isset($member["twitter"]) && ($member["twitter"] != "")) echo $member["twitter"]; else echo "javascript:void(0);"; ?>" class="social-icon-link bi-twitter"></a></li>
+                                        <li><a href="<?php if(isset($member["linkedin"]) && ($member["linkedin"] != "")) echo $member["linkedin"]; else echo "javascript:void(0);"; ?>" class="social-icon-link bi-linkedin"></a></li>
+                                        <li><a href="<?php if(isset($member["website"]) && ($member["website"] != "")) echo $member["website"]; else echo "javascript:void(0);"; ?>" class="social-icon-link bi-arrow-up-right-square"></a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                    }
+                    else{
+                        ?><div class="col-12"><div class="card"><h6 class="text-center">No Records Found!</h6></div></div><?php
+                    }
+                    ?>
                 </div>
             </div>
         </section>
         <!--steering committee section end-->
     </main>
 
-    <?php Layout::footer(); ?>
-    <?php Layout::scripts(); ?>
+    <?php Compon::footer(); ?>
+    <?php Compon::scripts(); ?>
 
 </body>
 

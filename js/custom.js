@@ -1,4 +1,3 @@
-
 (function ($) {
   
   "use strict";
@@ -11,42 +10,22 @@
       $(".navbar-collapse").collapse('hide');
   });
 
-  let pathParts = window.location.pathname.split('/');
-  let pathNames = pathParts[2].split('.');
-  let pathName = pathNames[0];
-
-  $("#navbarNav ul li.active").removeClass('active');
-
-  switch(pathName){
-    case 'index':
-      $("#navbarNav ul li a:contains('Home')").parent().addClass('active');
-      console.log(pathName);
-      break;
-    case 'about':
-      $("#navbarNav ul li a:contains('About Us')").parent().addClass('active');
-      console.log(pathName);
-      break;
-    case 'publications':
-      $("#navbarNav ul li a:contains('Publications')").parent().addClass('active');
-      console.log(pathName);
-      break;
-    case 'case-teams':
-      $("#navbarNav ul li a:contains('Case Teams')").parent().addClass('active');
-      console.log(pathName);
-      break;
-    case 'projects':
-      $("#navbarNav ul li a:contains('Projects')").parent().addClass('active');
-      console.log(pathName);
-      break;
-    case 'contact':
-      $("#navbarNav ul li a:contains('Contact Us')").parent().addClass('active');
-      console.log(pathName);
-      break;
-    default:
-      $("#navbarNav ul li a:contains('Home')").parent().addClass('active');
-      break;
-  }
+  var urlRegExp = "";
+  var url = window.location.pathname;
+  var page = $("body").attr("id");
     
-})(window.jQuery);
+  urlRegExp = new RegExp(url.replace(/\/$/,'') + "$");
 
-  
+  $("#navbarNav ul li a").each(function(){
+    $(this).parent().removeClass('active');
+    if(page == "home"){
+      $("#navbarNav ul li:first-child").addClass('active');
+    }
+    else{
+      if(urlRegExp.test(this.href.replace(/\/$/,''))){
+        $(this).parent().addClass('active');
+      }
+    }
+  });
+ 
+})(window.jQuery);

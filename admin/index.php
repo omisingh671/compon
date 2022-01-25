@@ -1,4 +1,7 @@
-<?php include_once "../compon.php"; ?>
+<?php include_once
+"../compon.php";
+Compon::isAdmin();
+?>
 
 <!doctype html>
 <html lang="en">

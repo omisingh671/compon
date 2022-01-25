@@ -1,14 +1,148 @@
 <?php
 include_once "compon.php";
 
+# unique journals start
+$journal_sql = "SELECT DISTINCT `journal` FROM `compon_publications` WHERE `id`!='' AND `status`='published' ORDER BY `journal` ASC";
+$stmt = Compon::rawSQL($journal_sql);
+$journals = array();
+if ($stmt->rowCount() > 0) {
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $journals[] = $row;
+    }
+}
+#unique journals end
+
+# reset filter form submit start
+if(isset($_POST["resetfilter"])){
+    Compon::resetFilter();
+	header('Location: publications.php'); exit;
+}
+if(isset($_POST["resetallfilter"])){
+    Compon::resetAllFilterAndSearch();
+	header('Location: publications.php'); exit;
+}
+# reset filter form submit end
+
+# apply filter form submit start
+if(isset($_POST["applyfilter"])){
+    Compon::resetSearch();
+    Compon::resetFilter();
+    $orderby = isset($_POST["orderby"]) ? addslashes("`".$_POST["orderby"]."`") : "`orderno`";
+    $_SESSION["orderby"] = $_POST["orderby"];
+    $_SESSION["orderby_filter"] = $orderby;
+
+    if(isset($_POST["journal"]) && is_array($_POST["journal"])){
+        $journal_len = sizeof($_POST["journal"]);
+        
+        $_SESSION["journals"] = implode(", ", $_POST["journal"]);
+
+        for($i=0; $i<$journal_len; $i++){
+            $journal_value = $_POST["journal"][$i];
+            if($i == $journal_len - 1){
+                $journals_filter .= "`journal`='".$journal_value."'";
+            }
+            else{
+                $journals_filter .= "`journal`='".$journal_value."' OR ";
+            }
+        }
+
+        $_SESSION["journals_filter"] = "(".$journals_filter.")";
+    }
+    
+    //echo $_SESSION["orderby_filter"];exit;
+}
+# apply filter form submit end
+
+if(isset($_POST["search-input"])){
+    Compon::resetFilter();
+    $keyword = addslashes($_POST["search-input"]);
+    
+    if(str_contains($keyword, "DROP") || str_contains($keyword, "drop") || str_contains($keyword, "DELETE") || str_contains($keyword, "delete") || str_contains($keyword, "UPDATE") || str_contains($keyword, "update") || str_contains($keyword, "INSERT") || str_contains($keyword, "insert") || str_contains($keyword, "=") || str_contains($keyword, "1=1") || ($keyword == "")) {
+        $keyword = "";
+    }
+    if(($_POST["search-input"] == "")){
+        Compon::resetSearch();
+        header('Location: publications.php'); exit;
+    }
+    $_SESSION["keyword_publication"] = $keyword;
+}
+
+/* filter + search + pagination start */
+$records_per_page = 4;
+$adjacents = 1;
+
+if (isset($_GET['page']) && $_GET['page'] != "") {
+    $page = $_GET['page'];
+    if($page == 0) $page = 1;
+    if(is_numeric($page) != 1) $page = 1;
+    $offset = $records_per_page * ($page - 1);
+}
+else {
+    $page = 1;
+    $offset = 0;
+}
+
+$limit = "LIMIT $offset, $records_per_page";
+$where = "`id`!='' AND `status`='published'";
+$total_pages = Compon::totalPublicationPages($records_per_page, $where);
 $columns = "*";
-$condition = "`id`!='' AND `status`='published' ORDER BY `orderno` ASC";
+$condition = "`id`!='' AND `status`='published' ORDER BY `orderno` ASC $limit";
+
+if(isset($_SESSION["journals_filter"]) && $_SESSION["journals_filter"] != ""){
+    $orderby_filter = $_SESSION["orderby_filter"];
+    $journals_filter = $_SESSION["journals_filter"];
+
+    if($orderby_filter == "`year`"){
+        $orderby_filter = "ORDER BY $orderby_filter DESC";
+    }
+    if($orderby_filter == "`country`"){
+        $orderby_filter = "ORDER BY $orderby_filter ASC";
+    }
+    if($orderby_filter == "`orderno`"){
+        $orderby_filter = "ORDER BY $orderby_filter ASC";
+    }
+
+    $condition = "`id`!='' AND `status`='published' AND $journals_filter $orderby_filter $limit";
+
+    $where = "`id`!='' AND `status`='published' AND $journals_filter";
+    $total_pages = Compon::totalPublicationPages($records_per_page, $where);
+}
+if(isset($_SESSION["orderby_filter"]) && !isset($_SESSION["journals_filter"])){
+    $orderby_filter = $_SESSION["orderby_filter"];
+    if($orderby_filter == "`year`"){
+        $orderby_filter = "ORDER BY $orderby_filter DESC";
+    }
+    if($orderby_filter == "`country`"){
+        $orderby_filter = "ORDER BY $orderby_filter ASC";
+    }
+    if($orderby_filter == "`orderno`"){
+        $orderby_filter = "ORDER BY $orderby_filter ASC";
+    }
+
+    $condition = "`id`!='' AND `status`='published' $orderby_filter $limit";
+}
+if(isset($_SESSION["keyword_publication"])){
+    $keyword_publication = $_SESSION["keyword_publication"];
+    if($keyword_publication == ""){
+        $where = "`id`!='' AND `status`='published' AND `title` NOT LIKE '%".$keyword_publication."%'";
+    }
+    else{
+        $where = "`id`!='' AND `status`='published' AND `title` LIKE '%".$keyword_publication."%'";
+    }
+    //$where = "`id`!='' AND `status`='published' AND `title` LIKE '%".$keyword_publication."%'";
+    $total_pages = Compon::totalPublicationPages($records_per_page, $where);
+    $condition = $where." ORDER BY `orderno` ASC "."$limit";
+    //$condition = "`id`!='' AND `status`='published' AND `title` LIKE '%".$keyword_publication."%' ORDER BY `orderno` ASC $limit";
+}
+/* filter + search + pagination end */
+
+//echo $condition;exit;
+
 $publications = Compon::getPublications($columns, $condition);
 
-$journals = array();
-foreach($publications as $publication){
-    $journals[] = $publication["journal"];
-}
+$pagination_range = Compon::pagingRange($page, $total_pages[0], $adjacents);
+$start = $pagination_range["start"];
+$end = $pagination_range["end"];
 ?>
 
 <!doctype html>
@@ -42,383 +176,179 @@ foreach($publications as $publication){
                     </div>
                 </div>
                 <div class="row">
+
+                    <!-- filter panel start -->
                     <div class="col-lg-4 col-sm-5 col-12">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="filter-heading-main rounded"><i class="bi bi-funnel"></i> Refine</div>
-                            </div>
-
-                            <div class="col-12">
-                                <div class="filter-btns d-flex justify-content-between">
-                                    <button type="button" class="btn btn-secondary flex-fill">Reset Filter</button>
-                                    <button type="button" class="btn btn-danger flex-fill">Apply Filter</button>
+                        <form name="filter-publication-form" method="post" action="publications.php" enctype="multipart/form-data">
+                            <input type="hidden" name="pageno" value="<?php echo $page; ?>" />
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="filter-btns d-flex justify-content-between">
+                                        <button type="submit" class="btn btn-danger flex-fill" name="applyfilter">Apply Filter</button>
+                                        <button type="submit" class="btn btn-secondary flex-fill" name="resetfilter">Reset Filter</button>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-12 member-types">
-                                <div class="filter-heading text-uppercase mt-3">Filter by</div>
-                                
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="year" checked>
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        Year
-                                    </label>
+                                <div class="col-12 member-types">
+                                    <div class="filter-heading text-uppercase mt-0">Filter by</div>
+
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="orderby" id="orderbyYear" value="year" <?php if(isset($_SESSION["orderby"]) && $_SESSION["orderby"] == "year") echo "checked"; ?>>
+                                        <label class="form-check-label" for="orderbyYear">
+                                            Year
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="orderby" id="orderbyCountry" value="country" <?php if(isset($_SESSION["orderby"]) && $_SESSION["orderby"] == "country") echo "checked"; ?>>
+                                        <label class="form-check-label" for="orderbyCountry">
+                                            Country
+                                        </label>
+                                    </div>
                                 </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="country" checked>
-                                    <label class="form-check-label" for="flexRadioDefault1">
-                                        Country
-                                    </label>
-                                </div>
-                            </div>
 
-                            <div class="col-12">
-                                <div class="filter-heading text-uppercase mb-2">Generals</div>
-
-                                <div class="d-grid gap-2" role="group" aria-label="Basic checkbox toggle button group">
-                                    <?php
-                                    if(sizeof($journals) > 0){
-                                        $count = 1;
-                                        foreach($journals as $journal){
-                                            ?>
-                                            <input type="checkbox" class="btn-check" name="journal" id="journal-<?php echo $count; ?>" value="<?php echo $journal; ?>" autocomplete="off">
-                                            <label class="btn btn-outline-success" for="journal-<?php echo $count; ?>"><?php echo $journal; ?></label>
+                                <div class="col-12">
+                                    <div class="filter-heading text-uppercase mb-2">Journals</div>
+                                    <div style="max-height: 370px; overflow-y: auto;">
+                                        <div class="d-grid gap-2" role="group" aria-label="Basic checkbox toggle button group">
                                             <?php
-                                            $count++;
-                                        }
-                                    }
-                                    else{
-                                        ?><label class="btn btn-outline-secondary">No Journal Found</label><?php
-                                    }
-                                    ?>
+                                            if (sizeof($journals) > 0) {
+                                                $count = 1;
+                                                
+                                                foreach ($journals as $journal) {
+                                                    $journals_session = explode(", ", $_SESSION["journals"]);
+                                                    foreach($journals_session as $journal_session){
+                                                        $journal_checked = false;
+                                                        if($journal["journal"] == $journal_session){
+                                                            $journal_checked = true;
+                                                            break;
+                                                        }
+                                                    }
+                                                ?>
+                                                    <input type="checkbox" class="btn-check" name="journal[]" id="journal-<?php echo $count; ?>" value="<?php echo $journal["journal"]; ?>" autocomplete="off" <?php if($journal_checked == true) echo "checked"; ?>>
+                                                    <label class="btn btn-outline-success" for="journal-<?php echo $count; ?>"><?php echo $journal["journal"]; ?></label>
+                                                <?php
+                                                    $count++;
+                                                }
+                                            }
+                                            else {
+                                                ?><label class="btn btn-outline-secondary">No Journal Found</label><?php
+                                            }
+                                            ?>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="col-12 mt-4">
-                                <div class="filter-btns d-flex justify-content-between">
-                                    <button type="button" class="btn btn-secondary flex-fill">Reset Filter</button>
-                                    <button type="button" class="btn btn-danger flex-fill">Apply Filter</button>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </div>
+                    <!-- filter panel end -->
+
+                    <!-- content panel start -->
                     <div class="col-lg-8 col-sm-7 col-12">
 
                         <div class="search-header d-flex flex-column flex-lg-row justify-content-between align-items-center rounded">
                             <div class="search-heading">
-                                9 matching results found
+                                <?php echo "Total ".$total_pages[1]." Publications Found"; ?>
                             </div>
                             <div class="search-box">
-                                <form class="row g-3 align-items-center" method="post">
-                                    <div class="col-auto" style="width: calc(100% - 94px);">
+                                <form class="row g-3 align-items-center" name="search-publication-form" method="post" action="publications.php" enctype="multipart/form-data">
+                                    <div class="col-auto" style="width: calc(100% - 164px);">
                                         <label for="search-input" class="visually-hidden">Search</label>
-                                        <input type="text" class="form-control" id="search-input" placeholder="Enter keywords to search...">
+                                        <input type="text" class="form-control" name="search-input" id="search-input" value="<?php if(isset($_SESSION["keyword_publication"])) echo $_SESSION["keyword_publication"]; ?>" placeholder="Enter keywords to search...">
                                     </div>
                                     <div class="col-auto">
-                                        <button type="submit" class="btn btn-primary mb-3" disabled>Search</button>
+                                        <button type="submit" class="btn btn-primary mb-3" name="search-publication">Search</button>
+                                        <button type="submit" class="btn btn-warning flex-fill" name="resetallfilter">Clear</button>
                                     </div>
                                 </form>
                             </div>
                         </div>
 
+                        <!-- publication start -->
+                        <?php
+                        foreach($publications as $publication){
+                            $country_arr = explode(", ", $publication["country"]);
+                        ?>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
+                                        <div class="ct-details">
+                                            <div class="ct-country-wrapper">
+                                                <?php
+                                                if(sizeof($country_arr) > 0){
+                                                    foreach($country_arr as $country){
+                                                        ?><span class="country badge bg-secondary me-1 mb-1"><?php echo $country; ?></span><?php
+                                                    }
+                                                }
+                                                else{
+                                                    ?><span class="country badge bg-secondary">N/A</span><?php
+                                                }
+                                                ?>
+                                            </div>
+                                            <div class="ct-name">
+                                                <p>
+                                                    <a href="<?php echo $publication["publicationlink"]; ?>">
+                                                        <?php echo $publication["title"]; ?>
+                                                    </a>
+                                                </p>
+                                            </div>
+                                            <div class="news-year">
+                                                <span class="badge bg-danger"><?php echo $publication["year"]; ?></span>
+                                                <p><i><?php echo $publication["journal"]; ?></i></p>
+                                            </div>
+                                            <div class="ct-affiliation">
+                                                <p><strong>Author:</strong> <?php echo $publication["authors"]; ?></p>
+                                            </div>
+                                            <div class="ct-contact">
+                                                <p><a href="<?php echo $publication["publicationlink"]; ?>">Read More</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php
+                        }
+                        ?>
+
                         <div class="row">
                             <div class="col-12">
-                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
-                                    <!--<div class="ct-image">
-                                        <img class="img-fluid rounded-circle" src="images/teams/mark-cj.png" />
-                                    </div>-->
-                                    <div class="ct-details">
-                                        <div class="ct-country-wrapper">
-                                            <span class="country badge bg-secondary">India</span>
-                                        </div>
-                                        <div class="ct-name">
-                                            <p><a href="https://www.tandfonline.com/doi/full/10.1080/17524032.2021.1973528?src=">Beliefs and Networks: Mapping the Indian Climate Policy Discourse Surrounding</a></p>
-                                        </div>
-                                        <div class="news-year">
-                                            <span class="badge bg-danger">2021</span>
-                                            <p><i>Environmental Communication</i></p>
-                                        </div>
-                                        <div class="ct-affiliation">
-                                            <p>Author: Pradip Swarnakar, Rajshri Shukla, and Jeffrey Broadbent</p>
-                                        </div>
-                                        <div class="ct-contact">
-                                            <p><a href="https://www.tandfonline.com/doi/full/10.1080/17524032.2021.1973528?src=">Read More</a></p>
-                                        </div>
-                                        <div class="ct-links">
-                                            <ul class="list-unstyled d-flex justify-content-start">
-                                                <!--<li><a title="https://markstoddart.academia.edu/" href="https://markstoddart.academia.edu/" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                                                <li><a title="@mcjs13" href="https://twitter.com/mcjs13" class="social-icon-link bi-twitter"></a></li>-->
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
+                                <?php
+                                if($total_pages[0] > 1){
+                                    ?>
+                                    <nav aria-label="Page Navigation">
+                                        <ul class="pagination">
+                                            <li class="page-item <?php ($page <= 1 ? print "disabled" : "")?>">
+                                                <a class="page-link" href="publications.php?page=1">First</a>
+                                            </li>
+
+                                            <li class="page-item <?php ($page <= 1 ? print "disabled" : "")?>">
+                                                <a class="page-link" href="publications.php?page=<?php ($page>1 ? print($page-1) : print 1)?>"><i class="bi bi-chevron-left"></i></a>
+                                            </li>
+
+                                            <?php for($i = $start; $i <= $end; $i++) { ?>
+                                            <li class="page-item <?php ($i == $page ? print "active" : "")?>">
+                                                <a class="page-link" href="publications.php?page=<?php echo $i;?>">
+                                                    <?php echo $i;?>
+                                                </a>
+                                            </li>
+                                            <?php } ?>
+
+                                            <li class="page-item <?php ($page >= $total_pages[0] ? print "disabled" : "")?>">
+                                                <a class="page-link" href="publications.php?page=<?php ($page < $total_pages[0] ? print($page+1) : print $total_pages)?>"><i class="bi bi-chevron-right"></i></a>
+                                            </li>
+
+                                            <li class="page-item <?php ($page >= $total_pages ? print "disabled" : "")?>">
+                                                <a class="page-link" href="publications.php?page=<?php echo $total_pages[0];?>">Last</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                    <?php
+                                }
+                                ?>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
-                                    <!--<div class="ct-image">
-                                        <img class="img-fluid rounded-circle" src="images/teams/petr-ocelik.png" />
-                                    </div>-->
-                                    <div class="ct-details">
-                                        <div class="ct-country-wrapper">
-                                            <span class="country badge bg-secondary">Finland</span>
-                                        </div>
-                                        <div class="ct-name">
-                                            <p><a href="https://www.sciencedirect.com/science/article/pii/S0959378021001278"> Polarization of climate politics results from partisan sorting: Evidence from Finnish Twittersphere</a></p>
-                                        </div>
-
-                                        <div class="news-year">
-                                            <span class="badge bg-danger">2021</span>
-                                            <p><i>Global Environmental Change</i></p>
-                                        </div>
-
-                                        <div class="ct-affiliation">
-                                            <p>Author: Ted Hsuan Yun Chen, Ali Salloum, Antti Gronow, TuomasYlä-Anttila, Mikko Kivelä </p>
-                                        </div>
-                                        <div class="ct-contact">
-                                            <p><a href="https://www.sciencedirect.com/science/article/pii/S0959378021001278">Read More</a></p>
-                                        </div>
-                                        <div class="ct-links">
-                                            <ul class="list-unstyled d-flex justify-content-start">
-                                                <!--<li><a title="https://www.researchgate.net/profile/PetrOcelik" href="https://www.researchgate.net/profile/PetrOcelik" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                                                <li><a title="@PetrOcelik" href="https://twitter.com/PetrOcelik" class="social-icon-link bi-twitter"></a></li>-->
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
-                                    <!--<div class="ct-image">
-                                        <img class="img-fluid rounded-circle" src="images/teams/ted-hasuan.png" />
-                                    </div>-->
-                                    <div class="ct-details">
-                                        <div class="ct-country-wrapper">
-                                            <span class="country badge bg-secondary">Finland</span>
-                                            <span class="country badge bg-secondary">Sweden</span>
-                                        </div>
-                                        <div class="ct-name">
-                                            <p><a href="https://onlinelibrary.wiley.com/doi/10.1111/psj.12450"> The Advocacy Coalition Index: A new approach for identifying advocacy coalitions</a></p>
-                                        </div>
-
-                                        <div class="news-year">
-                                            <span class="badge bg-danger">2021</span>
-                                            <p><i>Policy Studies Journal</i></p>
-                                        </div>
-
-                                        <div class="ct-affiliation">
-                                            <p>Author: Keiichi Satoh, Antti Gronow, Tuomas Ylä-Anttila</p>
-                                        </div>
-                                        <div class="ct-contact">
-                                            <p><a href="https://onlinelibrary.wiley.com/doi/10.1111/psj.12450">Read More</a></p>
-                                        </div>
-                                        <div class="ct-links">
-                                            <ul class="list-unstyled d-flex justify-content-start">
-                                                <!--<li><a title="https://tedhchen.com" href="https://tedhchen.com" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                                                <li><a title="@tedhchen" href="https://twitter.com/tedhchen" class="social-icon-link bi-twitter"></a></li>-->
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
-                                    <!--<div class="ct-image">
-                                        <img class="img-fluid rounded-circle" src="images/teams/tuomas.png" />
-                                    </div>-->
-                                    <div class="ct-details">
-                                        <div class="ct-country-wrapper">
-                                            <span class="country badge bg-secondary">Canada</span>                
-                                        </div>
-                                        <div class="ct-name">
-                                            <p><a href="https://www.tandfonline.com/doi/abs/10.1080/17524032.2021.1969978"> Competing Crises? Media Coverage and Framing of Climate Change During the COVID-19 Pandemic</a></p>
-                                        </div>
-
-                                        <div class="news-year">
-                                            <span class="badge bg-danger">2021</span>
-                                            <p><i>Environmental Communication</i></p>
-                                        </div>
-
-                                        <div class="ct-affiliation">
-                                            <p>Author: Mark C. J. Stoddart, Howard Ramos, Karen Foster & Tuomas Ylä-Anttila</p>
-                                        </div>
-                                        <div class="ct-contact">
-                                            <p><a href="https://www.tandfonline.com/doi/abs/10.1080/17524032.2021.1969978">Read More</a></p>
-                                        </div>
-                                        <div class="ct-links">
-                                            <!--<ul class="list-unstyled d-flex justify-content-start">
-                                                <li><a title="https://bit.ly/tuomas_y" href="https://bit.ly/tuomas_y" class="social-icon-link bi-arrow-up-right-square"></a></li>-->
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
-                                    <!--<div class="ct-image">
-                                        <img class="img-fluid rounded-circle" src="images/teams/anna-kukkonen.png" />
-                                    </div>-->
-                                    <div class="ct-details">
-                                        <div class="ct-country-wrapper">
-                                            <span class="country badge bg-secondary">Canada</span>
-                                        </div>
-                                        <div class="ct-name">
-                                            <p><a href="https://www.sciencedirect.com/science/article/pii/S0378873321000502"> Drivers of tie formation in the Canadian climate change policy network: Belief homophily</a></p>
-                                        </div>
-
-                                        <div class="news-year">
-                                            <span class="badge bg-danger">2021</span>
-                                            <p><i>Social Networks</i></p>
-                                        </div>
-
-                                        <div class="ct-affiliation">
-                                            <p>Author: Adam C.Howe, David B.Tindall, Marck C.J.Stoddart</p>
-                                        </div>
-                                        <div class="ct-contact">
-                                            <p><a href="https://www.sciencedirect.com/science/article/pii/S0378873321000502">Read More</a></p>
-                                        </div>
-                                        <div class="ct-links">
-                                            <ul class="list-unstyled d-flex justify-content-start">
-                                                <!--<li><a title="https://researchportal.helsinki.fi/en/persons/anna-kukkonen" href="https://researchportal.helsinki.fi/en/persons/anna-kukkonen" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                                                <li><a title="@kukkonen_anna" href="https://twitter.com/kukkonen_anna" class="social-icon-link bi-twitter"></a></li>-->
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
-                                    <!--<div class="ct-image">
-                                        <img class="img-fluid rounded-circle" src="images/teams/arttu.png" />
-                                    </div>-->
-                                    <div class="ct-details">
-                                        <div class="ct-country-wrapper">
-                                            <span class="country badge bg-secondary">Canada</span>
-                                        </div>
-                                        <div class="ct-name">
-                                            <p><a href="https://journals.sagepub.com/doi/abs/10.1177/0731121420908886"> Drivers of tie formation in the Canadian climate change policy network: Belief homophily</a></p>
-                                        </div>
-
-                                         <div class="news-year">
-                                            <span class="badge bg-danger">2021</span>
-                                            <p><i>Sociological Perspectives</i></p>
-                                        </div>
-
-                                        <div class="ct-affiliation">
-                                            <p>Author: David B Tindall, Adam C Howe, Céline Mauboulès </p>
-                                        </div>
-                                        <div class="ct-contact">
-                                            <p><a href="https://journals.sagepub.com/doi/abs/10.1177/0731121420908886">Read More</a></p>
-                                        </div>
-                                        <div class="ct-links">
-                                            <ul class="list-unstyled d-flex justify-content-start">
-                                                <!--<li><a title="https://researchportal.helsinki.fi/en/persons/arttu-malkam%C3%A4ki" href="https://researchportal.helsinki.fi/en/persons/arttu-malkam%C3%A4ki" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                                                <li><a title="@ArttuMalkamaki" href="https://twitter.com/ArttuMalkamaki" class="social-icon-link bi-twitter"></a></li>-->
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--<div class="row">
-                            <div class="col-12">
-                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
-                                    <div class="ct-image">
-                                        <img class="img-fluid rounded-circle" src="images/teams/paul-wagner.png" />
-                                    </div>
-                                    <div class="ct-details">
-                                        <div class="ct-country-wrapper">
-                                            <span class="country badge bg-secondary">Ireland</span>
-                                        </div>
-                                        <div class="ct-name">
-                                            <p>Paul Wagner</p>
-                                        </div>
-                                        <div class="ct-affiliation">
-                                            <p>Northumbria University</p>
-                                        </div>
-                                        <div class="ct-contact">
-                                            <p><a title="paul.wagner@northumbria.ac.uk" href="mailto:paul.wagner@northumbria.ac.uk">paul.wagner@northumbria.ac.uk</a></p>
-                                        </div>
-                                        <div class="ct-links">
-                                            <ul class="list-unstyled d-flex justify-content-start">
-                                                <li><a title="@mpaulwagner" href="https://twitter.com/mpaulwagner" class="social-icon-link bi-twitter"></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
-                                    <div class="ct-image">
-                                        <img class="img-fluid rounded-circle" src="images/teams/pradeep.png" />
-                                    </div>
-                                    <div class="ct-details">
-                                        <div class="ct-country-wrapper">
-                                            <span class="country badge bg-secondary">India</span>
-                                        </div>
-                                        <div class="ct-name">
-                                            <p>Pradip Swarnakar</p>
-                                        </div>
-                                        <div class="ct-affiliation">
-                                            <p>Indian Institute of Technology Kanpur</p>
-                                        </div>
-                                        <div class="ct-contact">
-                                            <p><a title="spradip@iitk.ac.in" href="mailto:spradip@iitk.ac.in">spradip@iitk.ac.in</a></p>
-                                        </div>
-                                        <div class="ct-links">
-                                            <ul class="list-unstyled d-flex justify-content-start">
-                                                <li><a title="https://home.iitk.ac.in/~spradip" href="https://home.iitk.ac.in/~spradip" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                                                <li><a title="@ps_iitk" href="https://twitter.com/ps_iitk" class="social-icon-link bi-twitter"></a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card ct-card d-flex flex-row justify-content-start align-items-center">
-                                    <div class="ct-image">
-                                        <img class="img-fluid rounded-circle" src="images/teams/jeffery.png" />
-                                    </div>
-                                    <div class="ct-details">
-                                        <div class="ct-country-wrapper">
-                                            <span class="country badge bg-secondary">US</span>
-                                            <span class="country badge bg-secondary">Japan</span>
-                                            <span class="country badge bg-secondary">meta-analysis</span>
-                                        </div>
-                                        <div class="ct-name">
-                                            <p>Jeff Broadbent</p>
-                                        </div>
-                                        <div class="ct-affiliation">
-                                            <p>University of Minnesota</p>
-                                        </div>
-                                        <div class="ct-contact">
-                                            <p><a title="broad001@umn.edu" href="broad001@umn.edu">mailto:broad001@umn.edu</a></p>
-                                        </div>
-                                        <div class="ct-links d-none">
-                                            <!-- <ul class="list-unstyled d-flex justify-content-start">
-                                                <li><a title="https://markstoddart.academia.edu/" href="https://markstoddart.academia.edu/" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                                                <li><a title="@mcjs13" href="https://twitter.com/mcjs13" class="social-icon-link bi-twitter"></a></li>
-                                            </ul> -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+                        <!-- publication end -->
                     </div>
+                    <!-- content panel end -->
                 </div>
             </div>
         </section>
