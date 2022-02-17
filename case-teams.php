@@ -173,12 +173,32 @@ $end = $pagination_range["end"];
                                                 <p><?php echo $members["university"]; ?></p>
                                             </div>
                                             <div class="ct-contact">
-                                                <p><a title="<?php echo $members["email"]; ?>" href="mailto:<?php echo $members["website"]; ?>"><?php echo $members["email"]; ?></a></p>
+                                                <p><a title="<?php echo $members["email"]; ?>" href="mailto:<?php echo $members["email"]; ?>"><?php echo $members["email"]; ?></a></p>
                                             </div>
                                             <div class="ct-links">
                                                 <ul class="list-unstyled d-flex justify-content-start">
-                                                    <li><a title="<?php echo $members["website"]; ?>" href="<?php echo $members["website"]; ?>" class="social-icon-link bi-arrow-up-right-square"></a></li>
-                                                    <li><a title="<?php echo $members["website"]; ?>" href="<?php echo $members["website"]; ?>" class="social-icon-link bi-twitter"></a></li>
+                                                    <?php
+                                                    if($members["website"] != ""){
+                                                        ?>
+                                                        <li><a title="<?php echo $members["website"]; ?>" href="<?php echo $members["website"]; ?>" class="social-icon-link bi-arrow-up-right-square"></a></li>
+                                                        <?php
+                                                    }
+                                                    if($members["twitter"] != ""){
+                                                        ?>
+                                                        <li><a title="<?php echo $members["website"]; ?>" href="<?php echo $members["twitter"]; ?>" class="social-icon-link bi-twitter"></a></li>
+                                                        <?php
+                                                    }
+                                                    if($members["linkedin"] != ""){
+                                                        ?>
+                                                        <li><a title="<?php echo $members["linkedin"]; ?>" href="<?php echo $members["linked"]; ?>" class="social-icon-link bi-linkedin"></a></li>
+                                                        <?php
+                                                    }
+                                                    if($members["facebook"] != ""){
+                                                        ?>
+                                                        <li><a title="<?php echo $members["facebook"]; ?>" href="<?php echo $members["facebook"]; ?>" class="social-icon-link bi-facebook"></a></li>
+                                                        <?php
+                                                    }
+                                                    ?>
                                                 </ul>
                                             </div>
                                         </div>

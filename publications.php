@@ -1,17 +1,6 @@
 <?php
 include_once "compon.php";
 
-# unique journals start
-$journal_sql = "SELECT DISTINCT `journal` FROM `compon_publications` WHERE `id`!='' AND `status`='published' ORDER BY `journal` ASC";
-$stmt = Compon::rawSQL($journal_sql);
-$journals = array();
-if ($stmt->rowCount() > 0) {
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $journals[] = $row;
-    }
-}
-#unique journals end
-
 # reset filter form submit start
 if(isset($_POST["resetfilter"])){
     Compon::resetFilter();
@@ -28,26 +17,7 @@ if(isset($_POST["applyfilter"])){
     Compon::resetSearch();
     Compon::resetFilter();
     $orderby = isset($_POST["orderby"]) ? addslashes("`".$_POST["orderby"]."`") : "`orderno`";
-    $_SESSION["orderby"] = $_POST["orderby"];
     $_SESSION["orderby_filter"] = $orderby;
-
-    if(isset($_POST["journal"]) && is_array($_POST["journal"])){
-        $journal_len = sizeof($_POST["journal"]);
-        
-        $_SESSION["journals"] = implode(", ", $_POST["journal"]);
-
-        for($i=0; $i<$journal_len; $i++){
-            $journal_value = $_POST["journal"][$i];
-            if($i == $journal_len - 1){
-                $journals_filter .= "`journal`='".$journal_value."'";
-            }
-            else{
-                $journals_filter .= "`journal`='".$journal_value."' OR ";
-            }
-        }
-
-        $_SESSION["journals_filter"] = "(".$journals_filter.")";
-    }
     
     //echo $_SESSION["orderby_filter"];exit;
 }
@@ -86,27 +56,8 @@ $limit = "LIMIT $offset, $records_per_page";
 $where = "`id`!='' AND `status`='published'";
 $total_pages = Compon::totalPublicationPages($records_per_page, $where);
 $columns = "*";
-$condition = "`id`!='' AND `status`='published' ORDER BY `orderno` ASC $limit";
+$condition = "`id`!='' AND `status`='published' ORDER BY `year` DESC $limit";
 
-if(isset($_SESSION["journals_filter"]) && $_SESSION["journals_filter"] != ""){
-    $orderby_filter = $_SESSION["orderby_filter"];
-    $journals_filter = $_SESSION["journals_filter"];
-
-    if($orderby_filter == "`year`"){
-        $orderby_filter = "ORDER BY $orderby_filter DESC";
-    }
-    if($orderby_filter == "`country`"){
-        $orderby_filter = "ORDER BY $orderby_filter ASC";
-    }
-    if($orderby_filter == "`orderno`"){
-        $orderby_filter = "ORDER BY $orderby_filter ASC";
-    }
-
-    $condition = "`id`!='' AND `status`='published' AND $journals_filter $orderby_filter $limit";
-
-    $where = "`id`!='' AND `status`='published' AND $journals_filter";
-    $total_pages = Compon::totalPublicationPages($records_per_page, $where);
-}
 if(isset($_SESSION["orderby_filter"]) && !isset($_SESSION["journals_filter"])){
     $orderby_filter = $_SESSION["orderby_filter"];
     if($orderby_filter == "`year`"){
@@ -124,15 +75,14 @@ if(isset($_SESSION["orderby_filter"]) && !isset($_SESSION["journals_filter"])){
 if(isset($_SESSION["keyword_publication"])){
     $keyword_publication = $_SESSION["keyword_publication"];
     if($keyword_publication == ""){
-        $where = "`id`!='' AND `status`='published' AND `title` NOT LIKE '%".$keyword_publication."%'";
+        $where = "`id`!='' AND `status`='published'";
     }
     else{
         $where = "`id`!='' AND `status`='published' AND `title` LIKE '%".$keyword_publication."%'";
     }
-    //$where = "`id`!='' AND `status`='published' AND `title` LIKE '%".$keyword_publication."%'";
     $total_pages = Compon::totalPublicationPages($records_per_page, $where);
-    $condition = $where." ORDER BY `orderno` ASC "."$limit";
-    //$condition = "`id`!='' AND `status`='published' AND `title` LIKE '%".$keyword_publication."%' ORDER BY `orderno` ASC $limit";
+    $condition = $where." ORDER BY `year` DESC "."$limit";
+    //echo $condition;exit;
 }
 /* filter + search + pagination end */
 
@@ -193,48 +143,16 @@ $end = $pagination_range["end"];
                                     <div class="filter-heading text-uppercase mt-0">Filter by</div>
 
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="orderby" id="orderbyYear" value="year" <?php if(isset($_SESSION["orderby"]) && $_SESSION["orderby"] == "year") echo "checked"; ?>>
+                                        <input class="form-check-input" type="radio" name="orderby" id="orderbyYear" value="year" <?php if(isset($_SESSION["orderby_filter"]) && $_SESSION["orderby_filter"] == "`year`") echo "checked"; ?>>
                                         <label class="form-check-label" for="orderbyYear">
                                             Year
                                         </label>
                                     </div>
                                     <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="orderby" id="orderbyCountry" value="country" <?php if(isset($_SESSION["orderby"]) && $_SESSION["orderby"] == "country") echo "checked"; ?>>
+                                        <input class="form-check-input" type="radio" name="orderby" id="orderbyCountry" value="country" <?php if(isset($_SESSION["orderby_filter"]) && $_SESSION["orderby_filter"] == "`country`") echo "checked"; ?>>
                                         <label class="form-check-label" for="orderbyCountry">
                                             Country
                                         </label>
-                                    </div>
-                                </div>
-
-                                <div class="col-12">
-                                    <div class="filter-heading text-uppercase mb-2">Journals</div>
-                                    <div style="max-height: 370px; overflow-y: auto;">
-                                        <div class="d-grid gap-2" role="group" aria-label="Basic checkbox toggle button group">
-                                            <?php
-                                            if (sizeof($journals) > 0) {
-                                                $count = 1;
-                                                
-                                                foreach ($journals as $journal) {
-                                                    $journals_session = explode(", ", $_SESSION["journals"]);
-                                                    foreach($journals_session as $journal_session){
-                                                        $journal_checked = false;
-                                                        if($journal["journal"] == $journal_session){
-                                                            $journal_checked = true;
-                                                            break;
-                                                        }
-                                                    }
-                                                ?>
-                                                    <input type="checkbox" class="btn-check" name="journal[]" id="journal-<?php echo $count; ?>" value="<?php echo $journal["journal"]; ?>" autocomplete="off" <?php if($journal_checked == true) echo "checked"; ?>>
-                                                    <label class="btn btn-outline-success" for="journal-<?php echo $count; ?>"><?php echo $journal["journal"]; ?></label>
-                                                <?php
-                                                    $count++;
-                                                }
-                                            }
-                                            else {
-                                                ?><label class="btn btn-outline-secondary">No Journal Found</label><?php
-                                            }
-                                            ?>
-                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -61,9 +61,22 @@ include_once "compon.php";
                         
                         if(sizeof($publications) > 0){
                             foreach($publications as $publication){
+                                $country_arr = explode(", ", $publication["country"]);
                                 ?>
                                 <div class="col-lg-4 col-sm-6">
                                     <div class="news-card card mb-3">
+                                        <div class="ct-country-wrapper">
+                                            <?php
+                                            if(sizeof($country_arr) > 0){
+                                                foreach($country_arr as $country){
+                                                    ?><span class="country badge bg-secondary me-1 mb-1"><?php echo ucwords($country); ?></span><?php
+                                                }
+                                            }
+                                            else{
+                                                ?><span class="country badge bg-secondary">N/A</span><?php
+                                            }
+                                            ?>
+                                        </div>
                                         <h6>
                                             <a target="_blank" href="<?php echo $publication["publicationlink"]; ?>">
                                                 <?php echo $publication["title"]; ?>

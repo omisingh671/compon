@@ -197,7 +197,7 @@ class CRUD{
 				break;
 			}
 			else if($fileSize > $maxUploadSize){
-				$status = "Sorry, file size exceeds the max upload limit of (".($fileSize/1024)."KB).";
+				$status = "Sorry, file size exceeds the max upload limit of <strong>".($fileSize/1024)."KB</strong>.";
 				break;
 			}
 			else if(($fileExt != "pdf") && ($width < $fileDimension[0] || $height < $fileDimension[1])){
@@ -228,7 +228,7 @@ class CRUD{
 			return $status;		
 		}
 		else if($fileSize > $maxUploadSize){
-			$status = "Sorry, file size exceeds the max upload limit of (".($fileSize/1024)."KB).";
+			$status = "Sorry, file size exceeds the max upload limit of <strong>".($fileSize/1024)."KB</strong>.";
 			return $status;
 		}
 		else if(($fileDimension[0] > 0) && ($width < $fileDimension[0] || $height < $fileDimension[1])){
@@ -241,7 +241,7 @@ class CRUD{
 				return $status;
 			}
 			else{
-				return "Unable to upload file, Try after some time!";
+				return "Unable to upload file at this moment, Try after a while!";
 			}			
 		}	
 	}

@@ -32,6 +32,7 @@ class Compon{
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <link href="css/bootstrap-icons.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="images/favicon.ico">
         <?php
     }
     # page styles end
@@ -117,6 +118,7 @@ class Compon{
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/bootstrap-icons.css" rel="stylesheet">
         <link href="../css/style.css" rel="stylesheet">
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
         <?php
     }
     # admin page styles end
@@ -154,7 +156,7 @@ class Compon{
                 </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
-                    <a href="manage-publications.php" class="nav-link text-white">
+                    <a href="manage-case-teams.php" class="nav-link text-white">
                         <i class="bi bi-people"></i> <span class="ms-2">Manage Case Teams</span>
                     </a>
                 </li>
@@ -280,6 +282,17 @@ class Compon{
         $records = $crud->getRow(self::$table_members, $columns, $where_condition);
         return $records;
     }
+    public static function createTeamMember($form_data){
+        global $crud;
+        $id = $crud->insertRow(self::$table_members, $form_data);
+        return $id;
+    }
+    public static function updateTeamMember($form_data, $id){
+        global $crud;
+        $where = "id=$id";
+        $status = $crud->updateRow(self::$table_members, $form_data, $where);
+        return $status;
+    }
     # case team end
 
     /* Utility Functions Start Here */
@@ -290,6 +303,14 @@ class Compon{
     }
     # actual link method end
 
+    # fileupload start
+    public static function fileUplode($fileHandler, $fileType, $maxUploadSize, $fileDimension, $targetPath){
+        global $crud;
+        $filecheck = $crud->fileUplode($fileHandler, $fileType, $maxUploadSize, $fileDimension, $targetPath);
+        return $filecheck;
+    }
+    # fileupload end
+
 	# site title method start
 	public static function siteTitle($title){
 		echo self::$site_title." | ".$title;
@@ -298,17 +319,10 @@ class Compon{
 
     # reset filter start
     public static function resetFilter(){
-        unset($_SESSION["orderby"]);
         unset($_SESSION["orderby_filter"]);
-        unset($_SESSION["journals"]);
-        unset($_SESSION["journals_filter"]);
-        unset($_SESSION["membertype"]);
     }
     public static function resetAllFilterAndSearch(){
-        unset($_SESSION["orderby"]);
         unset($_SESSION["orderby_filter"]);
-        unset($_SESSION["journals"]);
-        unset($_SESSION["journals_filter"]);
         unset($_SESSION["keyword_publication"]);
         unset($_SESSION["keyword_tm"]);
     }
